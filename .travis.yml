@@ -1,0 +1,9 @@
+language: python
+python:
+        - "3.6.5"
+sudo: enabled
+install:
+        - pip install -r requirements.txt
+script:
+        - pylint --rcfile=.pylintrc --output-format colorized backend/hamburg/hamburg_api/*.py
+        - py.test --verbose --cov backend/hamburg/hamburg_api--cov-report term-missing --cov-fail-under 100
