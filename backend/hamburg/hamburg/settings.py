@@ -22,11 +22,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'nv6+4_ew(s2_ni=mk%$rr7@5x)!yrqogl&q9%2%^+3p(7p70^&'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 IS_PROD = le(os.environ.get('IS_PROD', 'True'))
-DEBUG = not(IS_PROD)
+DEBUG = not IS_PROD
+
+MOVIEDB_API_KEY = os.environ['MOVIEDB_API_KEY']
+MOVIEDB_API_BASE = os.environ['MOVIEDB_API_BASE']
+MOVIEDB_API_SEARCH = os.environ['MOVIEDB_API_SEARCH']
+MOVIEDB_REGION = os.environ['MOVIEDB_REGION']
+MOVIEDB_LANG = os.environ['MOVIEDB_LANG']
 
 ALLOWED_HOSTS = ['*']
 
@@ -158,5 +164,22 @@ LOGGING = {
             'propagate': True,
             'level': 'INFO',
         },
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '50/day',
+        'anon': '50/day',
     }
 }

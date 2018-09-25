@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path, re_path
 from hamburg_api import views
 
+# pylint: disable=invalid-name
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^api/v1/welcome/test/$', views.WelcomeView.as_view()),
+    re_path(r'^api/v1/moviedb/search/$', views.SearchView.as_view()),
 ]

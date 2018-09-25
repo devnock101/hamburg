@@ -466,10 +466,10 @@ redefining-builtins-modules=six.moves,past.builtins,future.builtins,builtins,io
 [DESIGN]
 
 # Maximum number of arguments for function / method.
-max-args=5
+max-args=8
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=7
+max-attributes=25
 
 # Maximum number of boolean expressions in an if statement.
 max-bool-expr=5
@@ -478,7 +478,7 @@ max-bool-expr=5
 max-branches=12
 
 # Maximum number of locals for function / method body.
-max-locals=15
+max-locals=20
 
 # Maximum number of parents for a class (see R0901).
 max-parents=7
@@ -493,7 +493,7 @@ max-returns=6
 max-statements=50
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=2
+min-public-methods=1
 
 
 [CLASSES]
