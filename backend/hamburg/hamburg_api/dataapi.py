@@ -1,25 +1,24 @@
 """Business Logic Layer"""
 
-from urllib import request as lib_request
-import json
 import logging
+import requests
 from hamburg.settings import MOVIEDB_API_KEY,\
-        MOVIEDB_API_SEARCH, MOVIEDB_API_BASE, MOVIEDB_REGION,\
-        MOVIEDB_LANG
+        MOVIEDB_API_SEARCH, MOVIEDB_API_BASE, MOVIEDB_API_REGION,\
+        MOVIEDB_API_LANG
 
 LOGGER = logging.getLogger(__name__)
 
-class MovieDBResults(): #pylint: disable=too-few-public-methods
+class MovieDBResults():
     """Class for all data related to MovieDB"""
     def __init__(self):
         self.key = MOVIEDB_API_KEY
         self.key_text = 'api_key'
         self.base = MOVIEDB_API_BASE
         self.search = MOVIEDB_API_SEARCH
-        self.region = MOVIEDB_REGION
+        self.region = MOVIEDB_API_REGION
         self.region_text = 'region'
         self.lang_text = 'language'
-        self.lang = MOVIEDB_LANG
+        self.lang = MOVIEDB_API_LANG
         self.query_delim = '?'
         self.param_delim = '&'
         self.query = None
@@ -46,8 +45,8 @@ class SearchResultGetter(MovieDBResults):
         api_endpoint = SearchResultGetter._add_request_param(api_endpoint, self.query,\
                 self.query_text, self.param_delim)
         LOGGER.info("API ENDPOINT: %s", api_endpoint)
-        data = json.loads(lib_request.urlopen(api_endpoint).read().decode('utf-8'))
-        return data
+        data = requests.get(api_endpoint).json()
+        return data # pragma: no cover
 
     @staticmethod
     def _add_request_param(resource, key, param, delim):

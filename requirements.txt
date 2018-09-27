@@ -71,6 +71,7 @@ python-dateutil==2.7.3
 python-debian==0.1.32
 python-editor==1.0.3
 python-mimeparse==1.6.0
+python-memcached==1.59
 pytz==2018.5
 pyxdg==0.25
 PyYAML==3.12
@@ -98,3 +99,5 @@ Werkzeug==0.14.1
 whitenoise==4.1
 WTForms==2.1
 zope.interface==4.3.2
+iron-cache==0.3.2
+iron-core==1.2.0

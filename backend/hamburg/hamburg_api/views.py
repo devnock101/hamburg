@@ -18,7 +18,8 @@ class SearchView(APIView):
         """get results based on the search parameter"""
         try:
             response = SearchResultGetter(request).get_search_results()
-            return Response(response)
-        except AssertionError:
+            return Response(response) # pragma: no cover
+        #pylint: disable=broad-except
+        except Exception:
             _exc_type, _exc_valye, exc_traceback = sys.exc_info()
-            return Response(traceback.format_tb(exc_traceback))
+            return Response(traceback.format_tb(exc_traceback), status=500)

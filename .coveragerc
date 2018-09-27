@@ -4,3 +4,4 @@ omit =
     */apps.py
     */admin.py
     */tests/*
+	*/adhoc_scripts/*
