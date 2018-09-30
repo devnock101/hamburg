@@ -1,10 +1,13 @@
 """Business Logic Layer"""
 
 import logging
+from datetime import datetime, timedelta
+from django.db.models import Q
 import requests
 from hamburg.settings import MOVIEDB_API_KEY,\
         MOVIEDB_API_SEARCH, MOVIEDB_API_BASE, MOVIEDB_API_REGION,\
-        MOVIEDB_API_LANG
+        MOVIEDB_API_LANG, ALERT_THRESHOLD
+from .models import EmailAlertModel
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,6 +26,7 @@ class MovieDBResults():
         self.param_delim = '&'
         self.query = None
         self.query_text = 'query'
+
 
 class SearchResultGetter(MovieDBResults):
     """get search results using external API"""
@@ -53,3 +57,46 @@ class SearchResultGetter(MovieDBResults):
         """add key to resource identifier"""
         assert param is not None, "param cannot be None"
         return '{}{}{}={}'.format(resource, delim, param, key)
+
+
+class EmailAlertCreater():
+    """Class to create email alerts"""
+    def __init__(self, request):
+        self.request = request
+        self.data = None
+
+    def _create_model_data_dict(self):
+        """Helper method to encapsulate data to be saved"""
+        data_dict = {}
+        data_dict['email'] = self.data['email']
+        data_dict['movie_name'] = self.data['movie_name']
+        data_dict['release_date'] = self.data['release_date']
+        data_dict['alert_date'] = self.data.get('alert_date')
+        return data_dict
+
+    def save_alert_request(self):
+        "save alert request in the backend db"""
+        self.data = self.request.data
+        data_dict = self._create_model_data_dict()
+        alert = EmailAlertModel(**data_dict)
+        alert.save()
+        return {'saved': True}
+
+
+class DataGetter():
+    """Data getter class"""
+
+    @staticmethod
+    def get_email_alert_data(values=None):
+        """get data from email_alert table"""
+        if values is None:
+            values = ['id', 'movie_name', 'email']
+        today = datetime.today().date()
+        till = today + timedelta(ALERT_THRESHOLD)
+        alter_bool = Q(alert_date__isnull=False)
+        alert_cond = Q(alert_date=today)
+        release_lower = Q(release_date__gte=today)
+        release_upper = Q(release_date__lte=till)
+        dataset = EmailAlertModel.objects.filter((alter_bool & alert_cond)\
+                | (release_upper & release_lower)).values(*values)
+        return dataset
