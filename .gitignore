@@ -6,3 +6,38 @@ __pycache__/
 .coverage
 .pytest_cache/
 moviedb_data/
+backend/.DS_Store
+.DS_Store
+
+frontend/.DS_Store
+frontend/hamburg/.DS_Store
+frontend/hamburg/node_modules
+frontend/hamburg/.gitignore
+frontend/hamburg/babel.config.js
+frontend/hamburg/package-lock.json
+frontend/hamburg/package.json
+frontend/hamburg/postcss.config.js
+frontend/hamburg/README.md
+frontend/hamburg/.eslintrc.js
+frontend/hamburg/.browserslistrc
+frontend/hamburg/.firebaserc
+frontend/hamburg/firebase.json
+/dist
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
