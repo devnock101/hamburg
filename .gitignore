@@ -6,9 +6,12 @@ __pycache__/
 .coverage
 .pytest_cache/
 moviedb_data/
+
 backend/.DS_Store
 .DS_Store
-
+dist/
+node_modules/
+.firebase/
 frontend/.DS_Store
 frontend/hamburg/.DS_Store
 frontend/hamburg/node_modules
