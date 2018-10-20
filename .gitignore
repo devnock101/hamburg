@@ -15,6 +15,7 @@ node_modules/
 frontend/.DS_Store
 frontend/hamburg/.DS_Store
 frontend/hamburg/node_modules
+frontend/hamburg/dist
 frontend/hamburg/.gitignore
 frontend/hamburg/babel.config.js
 frontend/hamburg/package-lock.json
@@ -25,7 +26,7 @@ frontend/hamburg/.eslintrc.js
 frontend/hamburg/.browserslistrc
 frontend/hamburg/.firebaserc
 frontend/hamburg/firebase.json
-/dist
+
 
 # local env files
 .env.local
