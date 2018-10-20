@@ -1,6 +1,5 @@
 <template>
     <div id="landing">
-        <search/>
         <b-carousel id="carousel"
                     style="text-shadow: 1px 1px 2px #333;"
                     controls
@@ -19,13 +18,10 @@
             </b-carousel-slide>
             </b-media>
         </b-carousel>
-      <foot/>
     </div>
 </template>
 
 <script>
-import search from '@/components/searchSection.vue';
-import foot from '@/components/footerSection.vue';
 
 export default {
   name: "landing",
@@ -312,10 +308,6 @@ export default {
           }
         ]
     };
-  },
-  components:{
-    search,
-    foot
   },
   methods: {
     onSlideStart(slide) {

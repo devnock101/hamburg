@@ -17,8 +17,8 @@
         </b-container>
       </b-navbar>
     </header>
-    <foot/>
     <Search :results="results" :error="error"/>
+    <foot/>
   </div>
 </template>
 
