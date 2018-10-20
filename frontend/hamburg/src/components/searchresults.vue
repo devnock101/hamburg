@@ -16,8 +16,8 @@
                     <b-link class="movieLink" href="#" v-for="(result, index) in results" :key="index">
                     <b-card class="bucket">
                         <b-media tag="li" class="my-4">
-                        <b-img slot="aside" v-bind:src="posterBase+result.poster_path" 
-                            height="256" width="170" alt="placeholder" />
+                        <b-img-lazy slot="aside" v-bind:src="posterBase+result.poster_path" 
+                            height="256" width="170" blank-src="@/assets/alt.png" blank-color="#bbb" alt="alt"/>
                         <h5 class="mt-0 mt-1"><b>{{ result.title }}</b></h5>
                         <p class='releaseDate'>{{ result.release_date }}</p>
                         <p>{{ result.overview }}</p>
