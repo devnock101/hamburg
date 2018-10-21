@@ -7,14 +7,30 @@ __pycache__/
 .pytest_cache/
 moviedb_data/
 
-.DS_Store/
+backend/.DS_Store
+.DS_Store
 dist/
 node_modules/
 .firebase/
+frontend/.DS_Store
+frontend/hamburg/.DS_Store
+frontend/hamburg/node_modules
+frontend/hamburg/dist
+frontend/hamburg/.gitignore
+frontend/hamburg/babel.config.js
+frontend/hamburg/package-lock.json
+frontend/hamburg/package.json
+frontend/hamburg/postcss.config.js
+frontend/hamburg/README.md
+frontend/hamburg/.eslintrc.js
+frontend/hamburg/.browserslistrc
+frontend/hamburg/.firebaserc
+frontend/hamburg/firebase.json
+
 
 # local env files
-*/.env.local
-*/.env.*.local
+.env.local
+.env.*.local
 
 # Log files
 npm-debug.log*
