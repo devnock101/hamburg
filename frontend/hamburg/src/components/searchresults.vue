@@ -13,7 +13,7 @@
             </figure>
             <div class="media-content ">
                 <div class="content">
-                    <a><h4 class="title is-4 is-spaced">{{ result.title }}</h4></a>
+                    <a href="MovieID+result.id"><h4 class="title is-4 is-spaced">{{ result.title }}</h4></a>
                     <p class="subtitle is-6 is-spaced">{{ result.overview }}</p>
                     <p class="subtitle is-6 is-spaced"> {{result.release_date}}</p>
                 </div>
@@ -25,9 +25,10 @@
    export default {
        name: 'Search',
        data() {
-           return { posterBase: process.env.VUE_APP_POSTER_BASE }
+           return { posterBase: process.env.VUE_APP_POSTER_BASE, MovieID: process.env.VUE_APP_MOVIE }
        },
        props: {
+           id:{},
            results: {},
            error: ''
        }
