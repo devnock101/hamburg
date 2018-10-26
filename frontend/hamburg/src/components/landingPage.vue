@@ -42,7 +42,7 @@ export default {
   margin: 75px auto 0px;
   box-shadow: 0px 0px 40px #333;
 }
-.img-fluid {
+.carousel.img-fluid {
   object-fit: cover;
   max-width: 100%;
   height: 650px;
