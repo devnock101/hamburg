@@ -1,5 +1,24 @@
 <template>
-    <section   v-if="error.length" class="section">
+    <div>
+        ekrvnernv''
+        evnervn
+        nvrken
+        ekrvnernv''
+        evnervn
+        nvrken
+        ekrvnernv''
+        evnervn
+        nvrken        ekrvnernv''
+        evnervn
+        nvrken
+        ekrvnernv''
+        evnervn
+        nvrken
+        ekrvnernv''
+        evnervn
+        nvrke
+    </div>
+    <!--<section   v-if="error.length" class="section">
         <div class="notification is-danger">
             {{this.error}}
         </div>
@@ -21,15 +40,7 @@
                 </div>
             </div>
         </article>
-    </section>
-    <!--<form class="field has-addons" v-on:submit.prevent="getResults()">-->
-        <!--<p class="control is-expanded">-->
-            <!--<input class="input is-rounded is-danger" v-model="query" type="text" placeholder="Search movies">-->
-        <!--</p>-->
-        <!--<div class="control is-fullwidth">-->
-            <!--<input class="button is-rounded is-danger" type="submit" value="search">-->
-        <!--</div>-->
-    <!--</form>-->
+    </section>-->
 </template>
 
 <script>
@@ -51,7 +62,6 @@
             // ,setReminder(){}
         },
         props: {
-
             movieId: ''
         }
     }
