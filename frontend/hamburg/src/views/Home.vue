@@ -17,12 +17,14 @@
         </b-container>
       </b-navbar>
     </header>
+    <landing :results="results"/>
     <Search :results="results" :error="error"/>
     <foot/>
   </div>
 </template>
 
 <script>
+import landing from "@/components/landingPage.vue";
 import Search from "@/components/SearchResults.vue";
 import foot from "@/components/footerSection.vue";
 
@@ -31,11 +33,12 @@ export default {
     return {
       name: "home",
       results: {},
-      query: "",
-      error: ""
+      query: '',
+      error: ''
     };
   },
   components: {
+    //landing,
     Search,
     foot
   },
@@ -68,7 +71,7 @@ body {
   top: 0;
   padding: 16px;
   background: white;
-  box-shadow: 0px -4px 40px rgb(146, 145, 145);
+  box-shadow: 0px -4px 40px #777;
   z-index: 3;
 }
 .title {
