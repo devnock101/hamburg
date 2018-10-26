@@ -1,6 +1,16 @@
 <template>
-    <div class="main container-fluid">
-        <div class="holder">  
+    <div class="main">
+        <div class="backbuild">
+            <b-carousel id="background"
+                :interval="4000"
+                v-model="slide">
+                <b-carousel-slide v-for="(result, index) in results" :key="index">
+                    <b-img slot="img" class="back d-block img-fluid w-100" v-bind:src="posterBase+result.backdrop_path" 
+                        blank-color="#bbb" alt=""/>
+                </b-carousel-slide>
+        </b-carousel>
+        </div>
+        <div class="holder container-fluid">  
             <section   v-if="error.length" class="section">
                 <div class="notification is-danger">
                     <b-card class="bucket">
@@ -12,17 +22,19 @@
                 </div>
             </section>
             <section  v-else class="section">
-                <ul class="list-unstyled">
-                    <b-link class="movieLink" href="#" v-for="(result, index) in results" :key="index">
-                    <b-card class="bucket">
-                        <b-media tag="li" class="my-4">
-                        <b-img-lazy slot="aside" v-bind:src="posterBase+result.poster_path" 
-                            height="256" width="170" blank-src="@/assets/alt.png" blank-color="#bbb" alt="alt"/>
-                        <h5 class="mt-0 mt-1"><b>{{ result.title }}</b></h5>
-                        <p class='releaseDate'>{{ result.release_date }}</p>
-                        <p>{{ result.overview }}</p>
-                        </b-media>
-                    </b-card>  
+                <ul class="list-unstyled" v-for="(result, index) in results" :key="index">
+                    <b-link class="movieLink" href="#">
+                        <transition name="fade">
+                        <b-card class="bucket">
+                            <b-media tag="li" class="my-4">
+                            <b-img slot="aside" v-bind:src="posterBase+result.poster_path" 
+                                height="256" width="170" blank-color="#bbb" alt="alt"/>
+                            <h5 class="mt-0 mt-1"><b>{{ result.title }}</b></h5>
+                            <p class='releaseDate'>{{ result.release_date }}</p>
+                            <p>{{ result.overview }}</p>
+                            </b-media>
+                        </b-card>
+                        </transition>
                     </b-link>
                 </ul>
             </section>
@@ -43,7 +55,17 @@
 </script>
 
 <style>
-.main {
+.backbuild {
+  position: fixed;
+  width: 105%;
+  margin: -120px -50px;
+  z-index: -99;
+}
+.back {
+    -webkit-filter: blur(20px);
+    filter: blur(20px);
+}
+.holder {
   position: relative;
   margin: 105px auto 10px;
   align-items: center;
@@ -54,10 +76,10 @@
 .bucket {
   padding: 10px;
   margin: 20px auto;
-  box-shadow: 0px 0px 40px lightgray;
+  box-shadow: 0px 0px 40px #777;
 }
 .bucket:hover {
-  box-shadow: 0px 0px 20px darkgrey;
+  box-shadow: 0px 0px 20px #444;
 }
 .movieLink {
   text-decoration: none;
