@@ -1,9 +1,8 @@
 <template>
-    <div class="main">
+    <div class="main container-fluid">
         <div class="backbuild">
             <b-carousel id="background"
-                :interval="4000"
-                v-model="slide">
+                :interval="4000">
                 <b-carousel-slide v-for="(result, index) in results" :key="index">
                     <b-img slot="img" class="back d-block img-fluid w-100" v-bind:src="posterBase+result.backdrop_path" 
                         blank-color="#bbb" alt=""/>
@@ -57,9 +56,13 @@
 <style>
 .backbuild {
   position: fixed;
-  width: 105%;
+  min-width: 105%;
   margin: -120px -50px;
   z-index: -99;
+}
+.backbuild.fill {
+    min-height: 100%;
+    height: 100%;
 }
 .back {
     -webkit-filter: blur(20px);
