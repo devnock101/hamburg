@@ -12,7 +12,7 @@
               <b-col class="center">
                 <h2>Team Hamburg</h2>
                 <br>
-                <h4>Aman Kaushik</h4>
+                <h5>Aman Kaushik</h5>
               </b-col>
               <b-col class="right">
                 <br>
