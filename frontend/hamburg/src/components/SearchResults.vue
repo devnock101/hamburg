@@ -5,12 +5,12 @@
                 :interval="4000"
                 v-model="slide">
                 <b-carousel-slide v-for="(result, index) in results" :key="index">
-                    <b-img slot="img" class="back d-block img-fluid w-100" v-bind:src="posterBase+result.backdrop_path" 
+                    <b-img slot="img" class="back d-block img-fluid w-100" v-bind:src="posterBase+result.backdrop_path"
                         blank-color="#bbb" alt=""/>
                 </b-carousel-slide>
         </b-carousel>
         </div>
-        <div class="holder container-fluid">  
+        <div class="holder container-fluid">
             <section   v-if="error.length" class="section">
                 <div class="notification is-danger">
                     <b-card class="bucket">
@@ -23,11 +23,11 @@
             </section>
             <section  v-else class="section">
                 <ul class="list-unstyled" v-for="(result, index) in results" :key="index">
-                    <b-link class="movieLink" href="#">
+                    <b-link class="movieLink" v-bind:to="{name: 'details', params: {id: result.id}}">
                         <transition name="fade">
                         <b-card class="bucket">
                             <b-media tag="li" class="my-4">
-                            <b-img slot="aside" v-bind:src="posterBase+result.poster_path" 
+                            <b-img slot="aside" v-bind:src="posterBase+result.poster_path"
                                 height="256" width="170" blank-color="#bbb" alt="alt"/>
                             <h5 class="mt-0 mt-1"><b>{{ result.title }}</b></h5>
                             <p class='releaseDate'>{{ result.release_date }}</p>
@@ -38,7 +38,7 @@
                     </b-link>
                 </ul>
             </section>
-        </div>    
+        </div>
     </div>
 </template>
 <script>

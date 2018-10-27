@@ -466,7 +466,7 @@ redefining-builtins-modules=six.moves,past.builtins,future.builtins,builtins,io
 [DESIGN]
 
 # Maximum number of arguments for function / method.
-max-args=8
+max-args=12
 
 # Maximum number of attributes for a class (see R0902).
 max-attributes=25

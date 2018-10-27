@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     getResults() {
-      let endpoint = process.env.VUE_APP_ENDPOINT + this.query;
+      let endpoint = process.env.VUE_APP_SEARCH_ENDPOINT + this.query;
       this.$http.get(endpoint).then(
         function(response) {
           this.results = response.body.results;
