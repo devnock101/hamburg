@@ -4,7 +4,10 @@ from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .dataapi import SearchResultGetter, EmailAlertCreater,\
-        DataGetter, ShowtimeDetailsGetter, MovieDetailsGetter
+        DataGetter, ShowtimeDetailsGetter, MovieDetailsGetter,\
+        UpcomingDetailsGetter, PopularDetailsGetter,\
+        NowPlayingDetailsGetter, MovieTrailerGetter,\
+        SimilarDetailsGetter, RecoDetailsGetter
 from .decorators import error_decorator
 
 
@@ -55,8 +58,10 @@ class MovieDetailsView(APIView):
     @error_decorator
     def get(request):
         """get results based on the search parameter"""
-        response = MovieDetailsGetter(request).get_movie_details()
-        return Response(response) # pragma: no cover
+        response_details = MovieDetailsGetter(request).get_movie_details()
+        response_video = MovieTrailerGetter(request).get_movie_trailer()
+        response_details.update(response_video)
+        return Response(response_details) # pragma: no cover
 
 
 class ShowtimeDetailsView(APIView):
@@ -69,4 +74,69 @@ class ShowtimeDetailsView(APIView):
     def get(request):
         """get results based on the search parameter"""
         response = ShowtimeDetailsGetter(request).get_showtime_details()
+        return Response(response) # pragma: no cover
+
+
+class UpcomingView(APIView):
+    """Upcoming Movies"""
+    throttle_classes = (UserRateThrottle,)
+    http_method_names = ['get']
+
+    @staticmethod
+    @error_decorator
+    def get(request):
+        """get results based on the search parameter"""
+        response = UpcomingDetailsGetter(request).get_upcoming_details()
+        return Response(response) # pragma: no cover
+
+
+class PopularView(APIView):
+    """Popular Movies View"""
+    throttle_classes = (UserRateThrottle,)
+    http_method_names = ['get']
+
+    @staticmethod
+    @error_decorator
+    def get(request):
+        """get results based on the search parameter"""
+        response = PopularDetailsGetter(request).get_popular_details()
+        return Response(response) # pragma: no cover
+
+
+class NowPlayingView(APIView):
+    """Now playing movies"""
+    throttle_classes = (UserRateThrottle,)
+    http_method_names = ['get']
+
+    @staticmethod
+    @error_decorator
+    def get(request):
+        """get results based on the search parameter"""
+        response = NowPlayingDetailsGetter(request).get_now_playing_details()
+        return Response(response) # pragma: no cover
+
+
+class SimilarView(APIView):
+    """Now playing movies"""
+    throttle_classes = (UserRateThrottle,)
+    http_method_names = ['get']
+
+    @staticmethod
+    @error_decorator
+    def get(request):
+        """get results based on the search parameter"""
+        response = SimilarDetailsGetter(request).get_similar_movies()
+        return Response(response) # pragma: no cover
+
+
+class RecommendedView(APIView):
+    """Now playing movies"""
+    throttle_classes = (UserRateThrottle,)
+    http_method_names = ['get']
+
+    @staticmethod
+    @error_decorator
+    def get(request):
+        """get results based on the search parameter"""
+        response = RecoDetailsGetter(request).get_recommended_movies()
         return Response(response) # pragma: no cover
