@@ -1,68 +1,92 @@
 <template>
     <div>
-        ekrvnernv''
-        evnervn
-        nvrken
-        ekrvnernv''
-        evnervn
-        nvrken
-        ekrvnernv''
-        evnervn
-        nvrken        ekrvnernv''
-        evnervn
-        nvrken
-        ekrvnernv''
-        evnervn
-        nvrken
-        ekrvnernv''
-        evnervn
-        nvrke
-    </div>
-    <!--<section   v-if="error.length" class="section">
-        <div class="notification is-danger">
-            {{this.error}}
-        </div>
-    </section>
-    <section  v-else class="section">
-        <article class="media" v-for="result in results">
-            <figure class="media-left">
-                <p class="image is-256x256">
-                    <img v-bind:src="posterBase+result.poster_path ">
-                </p>
-            </figure>
-            <div class="media-content ">
-                <div class="content">
-                    <a><h4 class="title is-4 is-spaced">{{ result.title }}</h4></a>
-                    <p class="subtitle is-6 is-spaced">{{ result.overview }}</p>
-                    <p class="subtitle is-6 is-spaced">{{ result.cast}}</p>
-                    <p class="subtitle is-6 is-spaced">{{ result.overview }}</p>
-                    <p class="subtitle is-6 is-spaced"> {{result.release_date}}</p>
-                </div>
+        <section v-if="error.length" class="section">
+            <div class="notification is-danger">
+                {{this.error}}
             </div>
-        </article>
-    </section>-->
+        </section>
+        <section v-else>
+            <article>
+                <figure>
+                    <p>
+                        <youtube :video-id="result.video"></youtube>
+                    </p>
+                </figure>
+                <div>
+                    <div>
+                        <a v-bind:href="result.homepage"><h4>{{ result.homepage }}</h4></a>
+                        <p>{{ result.title }}</p>
+                        <p>{{ result.popularity }}</p>
+                        <p>{{ result.overview }}</p>
+                        <p>{{ result.release_date }}</p>
+                        <p>{{ result.runtime }}</p>
+                        <p>{{ result.tagline }}</p>
+                        <p>{{ result.vote_average }}</p>
+                        <p>{{ result.vote_count }}</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+        <section v-if="alert" class="section">
+            <form @submit.prevent="setAlert" class="searchForm">
+                <b-input-group>
+                    <b-form-input v-model="email" v-validate="'required|email'" type="text" name="email"
+                                  placeholder="Email" class="searchBar"/>
+                    <span>{{ errors.first('email') }}</span>
+                </b-input-group>
+            </form>
+        </section>
+    </div>
 </template>
 
 <script>
     export default {
-        name: "MovieDetails",
+        mounted() {
+            this.getDetails()
+        },
         methods: {
-            getResults() {
-                let endpoint = process.env.VUE_APP_ENDPOINT + this.movieId;
-                this.$http.get(endpoint).then(function(response) {
-                        this.results = response.body.results;
-                        if  (response.body.errors) {
+            getDetails() {
+                this.$http.get(this.endpoint).then(
+                    function (response) {
+                        this.result = response.body;
+                        this.alert = Date.now() < Date.parse(this.result.release_date);
+                        if (response.body.errors) {
                             this.error = response.body.errors[0];
                         } else {
-                            this.error = '';
+                            this.error = "";
                         }
-                    }, function(response) {}
-                )
+                    },
+                    function (response) {
+                    }
+                );
+            },
+            setAlert() {
+                this.$validator.validateAll().then(response => {
+                    if (response) {
+                        this.$http.post(process.env.VUE_APP_ALERT_ENDPOINT, {
+                            email: this.email,
+                            movie_name: this.result.title,
+                            release_date: this.result.release_date
+                        }).then(
+                            function (response) {
+                            }
+                        )
+                    } else {
+                        alert('Error in email.!')
+                    }
+                })
             }
-            // ,setReminder(){}
         },
-        props: {
-            movieId: ''
+        data() {
+            return {
+                endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
+                result: {},
+                error: '',
+                alert: false,
+                email: '',
+                title: '',
+                release_date: ''
+            };
         }
     }
 </script>
