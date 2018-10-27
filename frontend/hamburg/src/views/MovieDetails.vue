@@ -36,10 +36,17 @@
                 </b-input-group>
             </form>
         </section>
+        <Listing :endpoint = "endpoint_similar">
+
+        </Listing>
+        <Listing :endpoint = "endpoint_recommended">
+
+        </Listing>
     </div>
 </template>
 
 <script>
+    import Listing from "@/components/Listing"
     export default {
         mounted() {
             this.getDetails()
@@ -80,6 +87,8 @@
         data() {
             return {
                 endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
+                endpoint_similar: process.env.VUE_APP_SIMILAR_ENDPOINT + this.$route.params.id,
+                endpoint_recommended: process.env.VUE_APP_RECOMMENDED_ENDPOINT + this.$route.params.id,
                 result: {},
                 error: '',
                 alert: false,
@@ -87,7 +96,11 @@
                 title: '',
                 release_date: ''
             };
+        },
+        components: {
+            Listing
         }
+
     }
 </script>
 
