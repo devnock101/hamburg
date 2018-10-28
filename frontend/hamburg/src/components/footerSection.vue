@@ -39,7 +39,7 @@ export default {
   background-color: white;
   bottom: 0;
   width: 100%;
-  box-shadow: 0px -5px 40px #777;
+  box-shadow: 0px 5px 40px #777;
 }
 .left, .center, .right {
   text-align: center;

@@ -1,5 +1,6 @@
 <template>
-    <div class="main container-fluid">
+    <div class="search">
+        <headed/>
         <div class="backbuild">
             <b-carousel id="background"
                 :interval="4000">
@@ -22,7 +23,7 @@
             </section>
             <section  v-else class="section">
                 <ul class="list-unstyled" v-for="(result, index) in results" :key="index">
-                    <b-link class="movieLink" href="#">
+                    <b-link class="movieLink" v-bind:to="{name: 'details', params: {id: result.id}}">
                         <transition name="fade">
                         <b-card class="bucket">
                             <b-media tag="li" class="my-4">
@@ -37,19 +38,47 @@
                     </b-link>
                 </ul>
             </section>
-        </div>    
+        </div>
+        <foot/>  
     </div>
 </template>
+
 <script>
+   import headed from "@/components/headerSection.vue";
+   import foot from "@/components/footerSection.vue";
+
    export default {
-       name: 'Search',
-       data() {
-           return { posterBase: process.env.VUE_APP_POSTER_BASE }
+       name: 'search',
+       mounted: function () {
+           this.getResults()
        },
-       props: {
-           results: {},
-           error: ''
-       }
+       data: function() {
+           return { 
+               posterBase: process.env.VUE_APP_POSTER_BASE,
+               results: {},
+               error: ''
+        }
+       },
+       components: {
+           headed,
+           foot
+       },
+       methods: {
+        getResults: function() {
+            let endpoint = process.env.VUE_APP_SEARCH_ENDPOINT + this.$route.params.queryFor;
+            this.$http.get(endpoint).then(
+                function(response) {
+                this.results = response.body.results;
+                if (response.body.errors) {
+                    this.error = response.body.errors[0];
+                } else {
+                    this.error = "";
+                }
+                },
+                function(response) {}
+                );
+            }
+        }
    }
 </script>
 
@@ -66,7 +95,9 @@
 }
 .back {
     -webkit-filter: blur(20px);
-    filter: blur(20px);
+    filter: blur(10px);
+    height: 100%;
+    overflow:visible;
 }
 .holder {
   position: relative;
