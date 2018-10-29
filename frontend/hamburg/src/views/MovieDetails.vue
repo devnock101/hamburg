@@ -9,7 +9,7 @@
             <article>
                 <figure>
                     <p>
-                        <youtube :video-id="result.video"></youtube>
+                        <!--<youtube :video-id="result.video"></youtube>-->
                     </p>
                 </figure>
                 <div>
@@ -36,11 +36,9 @@
                 </b-input-group>
             </form>
         </section>
-        <Listing :endpoint = "endpoint_similar">
-
+        <Listing :endpoint = "combine(endpoint_similar, 'Similar')">
         </Listing>
-        <Listing :endpoint = "endpoint_recommended">
-
+        <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')">
         </Listing>
     </div>
 </template>
@@ -48,8 +46,13 @@
 <script>
     import Listing from "@/components/Listing"
     export default {
+        name: 'MovieDetails',
         mounted() {
+            console.log("mounted");
             this.getDetails()
+        },
+        updated() {
+            console.log("updated");
         },
         methods: {
             getDetails() {
@@ -77,11 +80,15 @@
                         }).then(
                             function (response) {
                             }
-                        )
+                        );
+                        alert('Alert Set!')
                     } else {
                         alert('Error in email.!')
                     }
                 })
+            },
+            combine(_endpoint, _type) {
+                return _endpoint + process.env.VUE_APP_DELIM + _type;
             }
         },
         data() {
@@ -89,18 +96,17 @@
                 endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
                 endpoint_similar: process.env.VUE_APP_SIMILAR_ENDPOINT + this.$route.params.id,
                 endpoint_recommended: process.env.VUE_APP_RECOMMENDED_ENDPOINT + this.$route.params.id,
-                result: {},
+                result: '',
                 error: '',
                 alert: false,
                 email: '',
                 title: '',
-                release_date: ''
+                release_date: '',
             };
         },
         components: {
             Listing
         }
-
     }
 </script>
 
