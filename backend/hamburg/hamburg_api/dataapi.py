@@ -3,14 +3,20 @@
 import logging
 from datetime import datetime, timedelta
 from django.db.models import Q
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
+from django.db import IntegrityError, ProgrammingError
+from django.forms.models import model_to_dict
 import requests
 from hamburg.settings import MOVIEDB_API_KEY,\
         MOVIEDB_API_SEARCH, MOVIEDB_API_BASE, MOVIEDB_API_REGION,\
         MOVIEDB_API_LANG, ALERT_THRESHOLD, MOVIEDB_API_DETAILS,\
         MOVIEDB_API_VIDEO, MOVIEDB_API_SHOWTIMES, MOVIEDB_API_UPCOMING,\
-        MOVIEDB_API_POPULAR, MOVIEDB_API_POPULAR, MOVIEDB_API_NOW_PLAYING,\
-        MOVIEDB_API_SIMILAR, MOVIEDB_API_RECO
-from .models import EmailAlertModel
+        MOVIEDB_API_POPULAR, MOVIEDB_API_NOW_PLAYING,\
+        MOVIEDB_API_SIMILAR, MOVIEDB_API_RECO, MOVIEGLU_API_BASE,\
+        MOVIEGLU_API_CLIENT, MOVIEGLU_API_KEY, MOVIEGLU_API_AUTH,\
+        MOVIEGLU_API_VERSION, MOVIEGLU_API_TERRITORY, MOVIEGLU_API_SEARCH,\
+        MOVIEGLU_API_GEO, MOVIEGLU_API_SHOWTIME
+from .models import EmailAlertModel, MovieIdMapperModel
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,6 +45,21 @@ class MovieDBResults():
         self.now_playing = MOVIEDB_API_NOW_PLAYING
         self.similar = MOVIEDB_API_SIMILAR
         self.reco = MOVIEDB_API_RECO
+        self.imdb_id = None
+        self.movie_name = None
+        self.movieglu_headers = {\
+                'client': MOVIEGLU_API_CLIENT,\
+                'territory': MOVIEGLU_API_TERRITORY,\
+                'api-version': MOVIEGLU_API_VERSION,\
+                'authorization': MOVIEGLU_API_AUTH,\
+                'device-datetime': datetime.now().isoformat(),\
+                'x-api-key': MOVIEGLU_API_KEY,
+                'geolocation': MOVIEGLU_API_GEO
+                }
+        self.movieglu_base = MOVIEGLU_API_BASE
+        self.movieglu_search = MOVIEGLU_API_SEARCH
+        self.movieglu_showtimes = MOVIEGLU_API_SHOWTIME
+        self.movieglu_query_text = "film_id"
 
     @staticmethod
     def add_request_param(resource, key, param, delim):
@@ -59,8 +80,7 @@ class SearchResultGetter(MovieDBResults):
                 "Search query cannot be greater than 30 characters"
         self.query = self.request.query_params['query']
         return SimpleGetter.get_simple(self.base, self.search, self.key, self.key_text,\
-                    self.lang, self.lang_text, self.region, self.region_text, query=self.query,\
-                    query_text=self.query_text)
+                    language="en-US", region="US", query=self.query)
 
 
 class EmailAlertCreater():
@@ -117,7 +137,7 @@ class MovieDetailsGetter(MovieDBResults):
         self.query = self.request.query_params['query']
         self.details = self.details.format(self.query)
         return SimpleGetter.get_simple(self.base, self.details, self.key, self.key_text,\
-                    self.lang, self.lang_text, self.region, self.region_text)
+                    language="en-US", region="US")
 
 
 class ShowtimeDetailsGetter(MovieDBResults):
@@ -128,7 +148,46 @@ class ShowtimeDetailsGetter(MovieDBResults):
 
     def get_showtime_details(self):
         """get showtime details"""
-        return {}
+        self.query = self.request.query_params['query']
+        self.imdb_id = self.request.query_params['imdb_id']
+        self.movie_name = self.request.query_params['movie_name']
+        mapping = False
+        try:
+            mapping = model_to_dict(\
+                    MovieIdMapperModel.objects.get(moviedb_id=self.query))
+        except MultipleObjectsReturned as exception:
+            LOGGER.info("MultipleObjectsReturned")
+            LOGGER.info(exception)
+            return {"errors": "Showtimes not found"}
+        except ObjectDoesNotExist as exception:
+            LOGGER.info("ObjectDoesNotExist")
+            LOGGER.info(exception)
+            try:
+                mapping = self._create_mapping()
+                MovieIdMapperModel(**mapping).save()
+            except IntegrityError as i_error:
+                LOGGER.info(i_error)
+                return {"errors": "Showtimes not found"}
+        except ProgrammingError as prog_error:
+            LOGGER.info(prog_error)
+            return {"errors": "Showtimes not found"}
+        return SimpleGetter.get_simple(self.movieglu_base, self.movieglu_showtimes,\
+                    mapping['movieglu_id'], self.movieglu_query_text,\
+                    date=str(datetime.today().date()), n=25, headers=self.movieglu_headers)
+
+    def _create_mapping(self):
+        """create moviedb and movieglu id mapping"""
+        data = SimpleGetter.get_simple(self.movieglu_base, self.movieglu_search,\
+                    self.movie_name, self.query_text, n=15, headers=self.movieglu_headers)
+        rtr = None
+        films = data.get('films')
+        if films is None:
+            return {'moviedb_id': self.query, 'movieglu_id': rtr, 'imdb_id': self.imdb_id}
+        for film in films:
+            if film['imdb_id'] == int(self.imdb_id[2:]): # moviedb imdbid begins with 'tt'
+                rtr = film['film_id']
+                break
+        return {'moviedb_id': self.query, 'movieglu_id': rtr, 'imdb_id': self.imdb_id}
 
 
 class MovieTrailerGetter(MovieDBResults):
@@ -142,7 +201,7 @@ class MovieTrailerGetter(MovieDBResults):
         self.query = self.request.query_params['query']
         self.video = self.video.format(self.query)
         data = SimpleGetter.get_simple(self.base, self.video, self.key, self.key_text,\
-                    self.lang, self.lang_text, self.region, self.region_text)
+                    language="en-US", region="US")
         filtered = list(filter(lambda x: "Trailer" in x.values(),\
                 data['results']))
         if filtered:
@@ -163,7 +222,7 @@ class UpcomingDetailsGetter(MovieDBResults):
     def get_upcoming_details(self):
         """get upcoming details"""
         return SimpleGetter.get_simple(self.base, self.upcoming, self.key, self.key_text,\
-                    self.lang, self.lang_text, self.region, self.region_text)
+                    language="en-US", region="US")
 
 
 class PopularDetailsGetter(MovieDBResults):
@@ -175,7 +234,7 @@ class PopularDetailsGetter(MovieDBResults):
     def get_popular_details(self):
         """get popular details"""
         return SimpleGetter.get_simple(self.base, self.popular, self.key, self.key_text,\
-                    self.lang, self.lang_text, self.region, self.region_text)
+                    language="en-US", region="US")
 
 
 class NowPlayingDetailsGetter(MovieDBResults):
@@ -187,7 +246,7 @@ class NowPlayingDetailsGetter(MovieDBResults):
     def get_now_playing_details(self):
         """get now playing details"""
         return SimpleGetter.get_simple(self.base, self.now_playing, self.key, self.key_text,\
-                    self.lang, self.lang_text, self.region, self.region_text)
+                    language="en-US", region="US")
 
 
 class SimilarDetailsGetter(MovieDBResults):
@@ -201,7 +260,7 @@ class SimilarDetailsGetter(MovieDBResults):
         self.query = self.request.query_params['query']
         self.similar = self.similar.format(self.query)
         return SimpleGetter.get_simple(self.base, self.similar, self.key, self.key_text,\
-                    self.lang, self.lang_text, self.region, self.region_text)
+                    language="en-US", region="US")
 
 
 class RecoDetailsGetter(MovieDBResults):
@@ -215,25 +274,24 @@ class RecoDetailsGetter(MovieDBResults):
         self.query = self.request.query_params['query']
         self.reco = self.reco.format(self.query)
         return SimpleGetter.get_simple(self.base, self.reco, self.key, self.key_text,\
-                    self.lang, self.lang_text, self.region, self.region_text)
+                    language="en-US", region="US")
 
 
 class SimpleGetter():
     """Simple get request"""
     @staticmethod
-    def get_simple(base, resource, key, key_text, lang, lang_text,\
-            region, region_text, query=None, query_text=None):
+    def get_simple(base, resource, key, key_text, **kwargs):
         """simple get requests"""
         api_endpoint = '{}/{}'.format(base, resource)
         api_endpoint = MovieDBResults.add_request_param(api_endpoint, key,\
                 key_text, MovieDBResults.QUERY_DELIM)
-        api_endpoint = MovieDBResults.add_request_param(api_endpoint, lang,\
-                lang_text, MovieDBResults.PARAM_DELIM)
-        api_endpoint = MovieDBResults.add_request_param(api_endpoint, region,\
-                region_text, MovieDBResults.PARAM_DELIM)
-        if query is not None:
-            api_endpoint = MovieDBResults.add_request_param(api_endpoint, query,\
-                    query_text, MovieDBResults.PARAM_DELIM)
+        try:
+            headers = kwargs.pop("headers")
+        except KeyError as _key_error:
+            headers = None
+        for _key, value in kwargs.items():
+            api_endpoint = MovieDBResults.add_request_param(api_endpoint, value,\
+                _key, MovieDBResults.PARAM_DELIM)
         LOGGER.info("API ENDPOINT: %s", api_endpoint)
-        data = requests.get(api_endpoint).json()
+        data = requests.get(api_endpoint, headers=headers).json()
         return data # pragma: no cover

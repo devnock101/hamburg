@@ -15,3 +15,15 @@ class EmailAlertModel(models.Model):
         """Meta class for EmailAlertModel"""
         managed = False
         db_table = 'email_alert'
+
+
+class MovieIdMapperModel(models.Model):
+    """Model for internal id mapping between moviedb and movieglu"""
+    moviedb_id = models.TextField(null=False)
+    movieglu_id = models.TextField(null=False)
+    imdb_id = models.TextField(null=False)
+
+    class Meta:
+        """Meta class for MovieIdMapperModel"""
+        managed = False
+        db_table = 'id_mapper'
