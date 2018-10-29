@@ -16,7 +16,7 @@
                 </div>
                 <transition name="slide-fade">
                     <!--Sign/In-->
-                    <div fluid>
+                    <div fluid v-cloak class='signIn'>
                         <b-form inline>
                         <label class="sr-only" for="inlineFormInputName2">Name</label>
                         <b-input class="navForm mb-2 mr-sm-2 mb-sm-0" id="inlineFormInputName2" placeholder="Username" />
@@ -29,7 +29,7 @@
                     </div>
                 </transition>
                 <!--Hamburger Button-->
-                <b-button class="hamburger .navbar-btn btn-link btn-lg" @click="show = !show">☰</b-button>
+                <b-button class="hamburger .navbar-btn btn-link btn-lg" @click="show != show">☰</b-button>
                 </b-container>
             </b-navbar>
         </header>
@@ -48,7 +48,7 @@ export default {
     },
     methods: {
         getQuery: function() {
-        this.$router.push({ name: "search", params: { queryFor: this.query }})
+            this.$router.push({ name: "search", params: { queryFor: this.query }})
         }
     }
 };
@@ -62,7 +62,7 @@ export default {
   padding: 16px;
   background: white;
   box-shadow: 0px -4px 40px #777;
-  z-index: 3;
+  z-index: 10;
 }
 .title {
   position: relative;
@@ -105,5 +105,8 @@ export default {
 .hamburger:active {
   outline: none !important;
   box-shadow: none;
+}
+.signIn {
+    display: none;
 }
 </style>

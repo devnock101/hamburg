@@ -1,35 +1,40 @@
 <template>
     <div class="movie">
+        <headed/>
         <section v-if="error.length" class="section">
             <div class="notification is-danger">
                 {{this.error}}
             </div>
         </section>
         <section v-else>
-            <article>
-                <div class="layer">
-                    <b-img blank blank-color="#777" alt="img"/>
-                </div>
-                <div class="backdrop container-fluid">
-                    <b-img class="backPoster" :src="imgsrc+result.backdrop_path"/>
+                <div>
+                    <div class="backdrop container-fluid">
+                            <b-img class="backPoster" :src="imgsrc+result.backdrop_path"/>
+                    </div>
+                    <div class="context conatiner-fluid d-inline-flex flex-row flex-now">
+                        <b-img class="moviePoster" :src="imgsrc+result.poster_path"/>
+                        <div class="info">
+                            <span class="movTitle">{{ result.title }}</span>
+                            <span class="movOverview">Overview</span>
+                            <span class="movContext">{{ result.overview }}</span>
+                            <span class="movRelease">Release Date : </span>
+                            <span class="movDate">{{ result.release_date }}</span>
+                            <span class="movTag">"{{ result.tagline }}"</span>
+                            <span class="movTime">Duration : </span>
+                            <span class="movDuration">{{ result.runtime }} min.</span>
+                            <span class="movPopu">Popularity : </span>
+                            <span class="movPop">{{ result.popularity }} %</span>
+                            <a class="movWeb" v-bind:href="result.homepage"><span>Website</span></a>
+                            <span class="movAV">Average Vote : </span>
+                            <span class="movAVote">{{ result.vote_average }}</span>
+                            <span class="movVC">Vote Count : </span>
+                            <span class="movVCount">{{ result.vote_count }}</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="trailer container-fluid">
                     <youtube :video-id="result.video"></youtube>
                 </div>
-                <div>
-                    <div>
-                        <a v-bind:href="result.homepage"><h4>{{ result.homepage }}</h4></a>
-                        <p>{{ result.title }}</p>
-                        <p>{{ result.popularity }}</p>
-                        <p>{{ result.overview }}</p>
-                        <p>{{ result.release_date }}</p>
-                        <p>{{ result.runtime }}</p>
-                        <p>{{ result.tagline }}</p>
-                        <p>{{ result.vote_average }}</p>
-                        <p>{{ result.vote_count }}</p>
-                    </div>
-                </div>
-            </article>
         </section>
         <section v-if="alert" class="section">
             <form @submit.prevent="setAlert" class="searchForm">
@@ -40,13 +45,21 @@
                 </b-input-group>
             </form>
         </section>
+        <foot/>
     </div>
 </template>
 
 <script>
+    import headed from "@/components/headerSection.vue";
+    import foot from "@/components/footerSection.vue";
+
     export default {
         mounted: function() {
             this.getDetails()
+        },
+        components: {
+            headed,
+            foot
         },
         methods: {
             getDetails: function() {
@@ -98,26 +111,154 @@
 
 <style scoped>
 .backdrop {
-    position: fixed;
-    height: 650px;
-    width: 105%;
-    margin: auto -15px;
+    position: absolute;
+    height: 1050px;
+    width: 101.1%;
+    margin: 75px -15px;
     overflow: hidden;
     z-index: -99;
+    background-color: rgba(0, 0, 0, 0.562);
 }
 .backPoster {
-    height: 1200px;
+    width: 105%;
+    height: auto;
+    margin: -5px -15px 0px;
     object-fit: cover;
     filter: blur(10px);
+    mix-blend-mode:overlay;
 }
-.layer {
-    position: fixed;
-    width: 105%;
-    height: 650px;
-    z-index: 1;
+.context {
+    width: 100%;
+    height: 600px;
+    margin: 75px auto 0px;
+}
+.moviePoster {
+    position: relative;
+    top: 15%;
+    left: 22%;
+    height: 450px;
+    width: 300px;
+    box-shadow: 0px 0px 40px #222;
+}
+.info {
+    position: relative;
+    top: -4%;
+    left: 30%;
+    width: 600px;
+}
+.movTitle {
+    position: absolute;
+    top: 20%;
+    color: white;
+    font-size: 36px;
+    text-shadow: 1px 1px 5px #333;
+    font-weight: bold;
+
+}
+.movOverview {
+    position: absolute;
+    top: 46%;
+    color: white;
+    font-size: 24px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movContext {
+    position: absolute;
+    top: 54%;
+    width: 750px;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movRelease {
+    position: absolute;
+    top: 68%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movDate {
+    position: absolute;
+    top: 68.5%;
+    left: 25%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movTag {
+    position: absolute;
+    top: 34%;
+    color: white;
+    font-size: 28px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movTime {
+    position: absolute;
+    top: 68%;
+    left: 60%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movDuration {
+    position: absolute;
+    top: 68.5%;
+    left: 78%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movPopu {
+    position: absolute;
+    top: 75%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movPop {
+    position: absolute;
+    top: 75.5%;
+    left: 25%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movWeb {
+    position: absolute;
+    top: 75%;
+    left: 60%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movAV {
+    position: absolute;
+    top: 82%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movAVote {
+    position: absolute;
+    top: 83%;
+    left: 25%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movVC {
+    position: absolute;
+    top: 82%;
+    left: 60%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movVCount {
+    position: absolute;
+    top: 83%;
+    left: 80%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
 }
 .trailer {
     position: relative;
-    z-index: 2;
+    left: 33%;
+    padding-bottom: 2.5%;
 }
 </style>

@@ -63,6 +63,9 @@
            headed,
            foot
        },
+       watch: {
+           '$route': 'getResults'
+       },
        methods: {
         getResults: function() {
             let endpoint = process.env.VUE_APP_SEARCH_ENDPOINT + this.$route.params.queryFor;
@@ -89,15 +92,12 @@
   margin: -120px -50px;
   z-index: -99;
 }
-.backbuild.fill {
-    min-height: 100%;
-    height: 100%;
-}
 .back {
     -webkit-filter: blur(20px);
     filter: blur(10px);
-    height: 100%;
-    overflow:visible;
+    width: 100%;
+    height: auto;
+    overflow: contain;
 }
 .holder {
   position: relative;
@@ -110,10 +110,10 @@
 .bucket {
   padding: 10px;
   margin: 20px auto;
-  box-shadow: 0px 0px 40px #777;
+  box-shadow: 0px 0px 40px #444;
 }
 .bucket:hover {
-  box-shadow: 0px 0px 20px #444;
+  box-shadow: 0px 0px 20px #222;
 }
 .movieLink {
   text-decoration: none;

@@ -5,7 +5,7 @@
         <b-carousel id="carousel"
                     controls
                     indicators
-                    :interval="4000">
+                    :interval="2000">
               <div v-for="(result, index) in now" :key="index">
                 <b-link class="movieLink" v-bind:to="{name: 'details', params: {id: result.id}}">  
                   <b-carousel-slide class="box">
@@ -17,17 +17,20 @@
               </div>
         </b-carousel>
       </div>
+      <div class="sub">
+        <h3 class="subtext">Trending Movies</h3>
+      </div>
       <div class="trend container-fluid">
-        <b-card-group deck>
-          <div class="decked d-inline-flex flex-row flex-now" v-for="(result, index) in trendz" :key="index">
-            <b-link v-bind:to="{name: 'details', params: {id: result.id}}">
-              <b-card v-bind:title='result.title'
+        <b-card-group deck class="d-inline-flex flex-row flex-now" v-for="(result, index) in trendz" :key="index">
+            <b-link class="trendLink" v-bind:to="{name: 'details', params: {id: result.id}}">
+              <b-card class="decked" v-bind:title='result.title'
+                      title-tag=h5
                       v-bind:img-src="backDropBase+result.poster_path"
+                      img-fluid
                       img-alt="Img" 
-                      img-top>
-              </b-card>
-            </b-link>
-          </div>  
+                      img-top
+                      align='center'/>
+            </b-link> 
         </b-card-group>
       </div>
       <foot/>
@@ -98,13 +101,18 @@ export default {
 </script>
 
 <style scoped>
-
+.subtext {
+  color: white;
+  text-shadow: 1px 1px 5px #000;
+}
 .carousel {
+  background-color: lightgrey;
   text-shadow: 1px 1px 2px #333;
-  margin: 75px auto 0px;
+  margin: 54px auto 0px;
   max-width: 100%;
   height: 650px;
-  box-shadow: 0px 0px 40px #777;
+  box-shadow: 0px 0px 40px #666;
+  z-index: 1;
 }
 .box {
   width: 105%;
@@ -112,15 +120,27 @@ export default {
   height: 650px;
   overflow: hidden;
 }
+.sub {
+  margin: 35px 40px -5px;
+}
 .trend {
   padding: 24px;
-  overflow-x: hidden;
   display: flex;
+  overflow-x: scroll;
+  text-decoration: none;
+  scroll-behavior: smooth;
 }
 .decked {
-  width: 224px;
-  height: 224px;
-  object-fit: fill;
+  min-width: 220px;
+  min-height: 220px;
+  object-fit: contain;
+  box-shadow: 0px 0px 40px #333;
+  margin: 0px 25px;
+  border-radius: 7px;
+}
+.trendLink {
+  text-decoration: none;
+  color: #333;
 }
 </style>
 
