@@ -36,7 +36,8 @@
                     <youtube :video-id="result.video"></youtube>
                 </div>
         </section>
-        <section v-if="alert" class="section">
+        <section v-if="alert" class="mail conatiner-fluid d-inline-flex flex-row flex-now">
+            <span class="reminder">Reminder : </span>
             <form @submit.prevent="setAlert" class="searchForm">
                 <b-input-group>
                     <b-form-input v-model="email" v-validate="'required|email'" type="text" name="email"
@@ -112,7 +113,7 @@
 <style scoped>
 .backdrop {
     position: absolute;
-    height: 1050px;
+    height: 1200px;
     width: 101.1%;
     margin: 75px -15px;
     overflow: hidden;
@@ -260,5 +261,24 @@
     position: relative;
     left: 33%;
     padding-bottom: 2.5%;
+    height: 380px;
+}
+.mail {
+    position: relative;
+    width: 100%;
+    padding-top: 56px;
+    padding-bottom: 48px;
+}
+.reminder {
+    position: relative;
+    left:32%;
+    color: white;
+    font-size: 24px;
+    text-shadow: 1px 1px 5px #333;
+}
+.searchForm {
+    position: relative;
+    left: 34%;
+    width: 30%;
 }
 </style>
