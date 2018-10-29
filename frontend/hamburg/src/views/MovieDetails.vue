@@ -9,7 +9,7 @@
             <article>
                 <figure>
                     <p>
-                        <!--<youtube :video-id="result.video"></youtube>-->
+                        <youtube :video-id="result.video"></youtube>
                     </p>
                 </figure>
                 <div>
