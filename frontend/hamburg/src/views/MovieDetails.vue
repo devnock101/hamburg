@@ -46,6 +46,7 @@
                 </b-input-group>
             </form>
         </section>
+        <section v-else class="made container-fluid"/>
         <foot/>
     </div>
 </template>
@@ -260,8 +261,13 @@
 .trailer {
     position: relative;
     left: 33%;
-    padding-bottom: 2.5%;
     height: 380px;
+}
+.made {
+    position: relative;
+    width: 100%;
+    padding-top: 56px;
+    padding-bottom: 48px;
 }
 .mail {
     position: relative;
