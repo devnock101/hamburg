@@ -1,17 +1,12 @@
 <template>
-<<<<<<< HEAD
     <div class="movie">
         <headed/>
-=======
-    <div>
->>>>>>> development
         <section v-if="error.length" class="section">
             <div class="notification is-danger">
                 {{this.error}}
             </div>
         </section>
         <section v-else>
-<<<<<<< HEAD
                 <div>
                     <div class="backdrop container-fluid">
                             <b-img class="backPoster" :src="imgsrc+result.backdrop_path"/>
@@ -24,7 +19,7 @@
                             <span class="movContext">{{ result.overview }}</span>
                             <span class="movRelease">Release Date : </span>
                             <span class="movDate">{{ result.release_date }}</span>
-                            <span class="movTag">"{{ result.tagline }}"</span>
+                            <span class="movTag" v-if: result.tagline>"{{ result.tagline }}"</span>
                             <span class="movTime">Duration : </span>
                             <span class="movDuration">{{ result.runtime }} min.</span>
                             <span class="movPopu">Popularity : </span>
@@ -43,30 +38,6 @@
         </section>
         <section v-if="alert" class="mail conatiner-fluid d-inline-flex flex-row flex-now">
             <span class="reminder">Reminder : </span>
-=======
-            <article>
-                <figure>
-                    <p>
-                        <youtube :video-id="result.video"></youtube>
-                    </p>
-                </figure>
-                <div>
-                    <div>
-                        <a v-bind:href="result.homepage"><h4>{{ result.homepage }}</h4></a>
-                        <p>{{ result.title }}</p>
-                        <p>{{ result.popularity }}</p>
-                        <p>{{ result.overview }}</p>
-                        <p>{{ result.release_date }}</p>
-                        <p>{{ result.runtime }}</p>
-                        <p>{{ result.tagline }}</p>
-                        <p>{{ result.vote_average }}</p>
-                        <p>{{ result.vote_count }}</p>
-                    </div>
-                </div>
-            </article>
-        </section>
-        <section v-if="alert" class="section">
->>>>>>> development
             <form @submit.prevent="setAlert" class="searchForm">
                 <b-input-group>
                     <b-form-input v-model="email" v-validate="'required|email'" type="text" name="email"
@@ -75,49 +46,39 @@
                 </b-input-group>
             </form>
         </section>
-<<<<<<< HEAD
         <section v-else class="made container-fluid"/>
         <foot/>
-=======
         <Listing :endpoint = "combine(endpoint_similar, 'Similar')">
         </Listing>
         <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')">
         </Listing>
-        <showtimes :_query="result.id" :imdb_id="result.imdb_id" :movie_name="result.title"></showtimes>
->>>>>>> development
+        <Showtimes :_query="result.id" :imdb_id="result.imdb_id" :movie_name="result.title"></Showtimes>
     </div>
 </template>
 
 <script>
-<<<<<<< HEAD
     import headed from "@/components/headerSection.vue";
     import foot from "@/components/footerSection.vue";
-
-    export default {
-        mounted: function() {
-            this.getDetails()
-        },
-        components: {
-            headed,
-            foot
-        },
-        methods: {
-            getDetails: function() {
-=======
     import Listing from "@/components/Listing"
     import Showtimes from  "@/components/Showtimes.vue";
+
     export default {
         name: 'MovieDetails',
-        mounted() {
+        mounted: function() {
             console.log("mounted");
             this.getDetails()
         },
-        updated() {
+        updated: function() {
             console.log("updated");
         },
+        components: {
+            headed,
+            foot,
+            Listing,
+            Showtimes
+        },
         methods: {
-            getDetails() {
->>>>>>> development
+            getDetails: function() {
                 this.$http.get(this.endpoint).then(
                     function (response) {
                         this.result = response.body;
@@ -132,11 +93,7 @@
                     }
                 );
             },
-<<<<<<< HEAD
             setAlert: function() {
-=======
-            setAlert() {
->>>>>>> development
                 this.$validator.validateAll().then(response => {
                     if (response) {
                         this.$http.post(process.env.VUE_APP_ALERT_ENDPOINT, {
@@ -146,25 +103,12 @@
                         }).then(
                             function (response) {
                             }
-<<<<<<< HEAD
-                        )
-=======
                         );
                         alert('Alert Set!')
->>>>>>> development
                     } else {
                         alert('Error in email.!')
                     }
                 })
-<<<<<<< HEAD
-            }
-        },
-        data: function() {
-            return {
-                endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
-                imgsrc: process.env.VUE_APP_POSTER_BASE,
-                result: {},
-=======
             },
             combine(_endpoint, _type) {
                 return _endpoint + process.env.VUE_APP_DELIM + _type;
@@ -175,17 +119,16 @@
                 endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
                 endpoint_similar: process.env.VUE_APP_SIMILAR_ENDPOINT + this.$route.params.id,
                 endpoint_recommended: process.env.VUE_APP_RECOMMENDED_ENDPOINT + this.$route.params.id,
+                imgsrc: process.env.VUE_APP_POSTER_BASE,
                 result: '',
->>>>>>> development
                 error: '',
                 alert: false,
                 email: '',
                 title: '',
-<<<<<<< HEAD
-                release_date: ''
-                };
-            }
+                    release_date: '',
+            };
         }
+    }
 </script>
 
 <style scoped>
@@ -365,17 +308,3 @@
     width: 30%;
 }
 </style>
-=======
-                release_date: '',
-            };
-        },
-        components: {
-            Listing
-        }
-    }
-</script>
-
-<style scoped>
-
-</style>
->>>>>>> development
