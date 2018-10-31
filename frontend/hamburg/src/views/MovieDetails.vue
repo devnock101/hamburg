@@ -40,11 +40,13 @@
         </Listing>
         <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')">
         </Listing>
+        <showtimes :_query="result.id" :imdb_id="result.imdb_id" :movie_name="result.title"></showtimes>
     </div>
 </template>
 
 <script>
     import Listing from "@/components/Listing"
+    import Showtimes from  "@/components/Showtimes.vue";
     export default {
         name: 'MovieDetails',
         mounted() {
