@@ -43,6 +43,7 @@
         <showtimes :_query="result.id" :imdb_id="result.imdb_id" :movie_name="result.title"></showtimes>
     </div>
 </template>
+
 <script>
     import Listing from "@/components/Listing"
     import Showtimes from  "@/components/Showtimes.vue";
@@ -83,36 +84,34 @@
                             }
                         );
                         alert('Alert Set!')
-
-            } else {
-                alert('Error in email.!')
-    }
-    });
-    },
-    combine(_endpoint, _type) {
-        return _endpoint + process.env.VUE_APP_DELIM + _type;
-    }
-    },
-    data() {
-        return {
-            endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
-            endpoint_similar: process.env.VUE_APP_SIMILAR_ENDPOINT + this.$route.params.id,
-            endpoint_recommended: process.env.VUE_APP_RECOMMENDED_ENDPOINT + this.$route.params.id,
-            result: '',
-            result: {},
-            error: '',
-            alert: false,
-            email: '',
-            title: '',
-            release_date: '',
-            release_date: ''
-        };
-    },
-    components: {
-        Listing,
-        Showtimes
-    }
+                    } else {
+                        alert('Error in email.!')
+                    }
+                })
+            },
+            combine(_endpoint, _type) {
+                return _endpoint + process.env.VUE_APP_DELIM + _type;
+            }
+        },
+        data() {
+            return {
+                endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
+                endpoint_similar: process.env.VUE_APP_SIMILAR_ENDPOINT + this.$route.params.id,
+                endpoint_recommended: process.env.VUE_APP_RECOMMENDED_ENDPOINT + this.$route.params.id,
+                result: '',
+                error: '',
+                alert: false,
+                email: '',
+                title: '',
+                release_date: '',
+            };
+        },
+        components: {
+            Listing
+        }
     }
 </script>
+
 <style scoped>
+
 </style>
