@@ -16,7 +16,29 @@ export default {
     };
   },
   components: {
+<<<<<<< HEAD
     landing,
+=======
+    //landing,
+    Search,
+    foot
+  },
+  methods: {
+    getResults() {
+      let endpoint = process.env.VUE_APP_SEARCH_ENDPOINT + this.query;
+      this.$http.get(endpoint).then(
+        function(response) {
+          this.results = response.body.results;
+          if (response.body.errors) {
+            this.error = response.body.errors[0];
+          } else {
+            this.error = "";
+          }
+        },
+        function(response) {}
+      );
+    }
+>>>>>>> development
   }
 };
 </script>
