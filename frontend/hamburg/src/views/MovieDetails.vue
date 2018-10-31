@@ -46,13 +46,10 @@
                 </b-input-group>
             </form>
         </section>
-        <section v-else class="made container-fluid"/>
+        <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
+        <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
+        <showtimes :_query="result.id" :imdb_id="result.imdb_id" :movie_name="result.title"/>
         <foot/>
-        <Listing :endpoint = "combine(endpoint_similar, 'Similar')">
-        </Listing>
-        <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')">
-        </Listing>
-        <Showtimes :_query="result.id" :imdb_id="result.imdb_id" :movie_name="result.title"></Showtimes>
     </div>
 </template>
 
@@ -133,11 +130,11 @@
 
 <style scoped>
 .backdrop {
-    position: absolute;
+    position: fixed;
     height: 1200px;
     width: 101.1%;
     margin: 75px -15px;
-    overflow: hidden;
+    
     z-index: -99;
     background-color: rgba(0, 0, 0, 0.562);
 }
@@ -145,11 +142,11 @@
     width: 105%;
     height: auto;
     margin: -5px -15px 0px;
-    object-fit: cover;
     filter: blur(10px);
     mix-blend-mode:overlay;
 }
 .context {
+    position: relative;
     width: 100%;
     height: 600px;
     margin: 75px auto 0px;
@@ -187,7 +184,7 @@
 .movContext {
     position: absolute;
     top: 54%;
-    width: 750px;
+    width: 110%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
@@ -248,6 +245,7 @@
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
+    text-decoration: none;
 }
 .movAV {
     position: absolute;
