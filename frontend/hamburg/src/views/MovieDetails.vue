@@ -37,7 +37,7 @@
                 </div>
         </section>
         <section v-if="alert" class="mail conatiner-fluid d-inline-flex flex-row flex-now">
-            <span class="reminder">Reminder : </span>
+            <span class="reminder">Get movie release alerts : </span>
             <form @submit.prevent="setAlert" class="searchForm">
                 <b-input-group>
                     <b-form-input v-model="email" v-validate="'required|email'" type="text" name="email"
@@ -122,7 +122,7 @@
                 alert: false,
                 email: '',
                 title: '',
-                    release_date: '',
+                release_date: '',
             };
         }
     }
@@ -292,6 +292,7 @@
     width: 100%;
     padding-top: 56px;
     padding-bottom: 48px;
+    left:-8%;
 }
 .reminder {
     position: relative;
