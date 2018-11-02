@@ -35,25 +35,25 @@
             <div class="trailer container-fluid">
                 <youtube :video-id="result.video"></youtube>
             </div>
-        </section>
-        <section v-if="alert" class="mail conatiner-fluid d-inline-flex flex-row flex-now">
-            <span class="reminder">Get movie release alerts : </span>
-            <form @submit.prevent="setAlert" class="searchForm">
-                <b-input-group>
-                    <b-form-input v-model="email" v-validate="'required|email'" type="text" name="email"
-                                  placeholder="Email" class="searchBar"/>
-                    <span>{{ errors.first('email') }}</span>
-                </b-input-group>
-            </form>
-        </section>
-        <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
-        <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
-        <div>
-            <button v-on:click="showShowtimes()">{{ showtime_text }}</button>
-            <div v-if="this.showtime_flag">
-                <Showtimes :endpoint="combine(endpoint_showtimes, 'Showtimes')"></Showtimes>
+            <section v-if="alert" class="mail conatiner-fluid d-inline-flex flex-row flex-now">
+                <span class="reminder">Get movie release alerts : </span>
+                <form @submit.prevent="setAlert" class="searchForm">
+                    <b-input-group>
+                        <b-form-input v-model="email" v-validate="'required|email'" type="text" name="email"
+                                    placeholder="Email" class="searchBar"/>
+                        <span>{{ errors.first('email') }}</span>
+                    </b-input-group>
+                </form>
+            </section>
+            <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
+            <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
+            <div>
+                <button v-on:click="showShowtimes()">{{ showtime_text }}</button>
+                <div v-if="this.showtime_flag">
+                    <Showtimes :endpoint="combine(endpoint_showtimes, 'Showtimes')"></Showtimes>
+                </div>
             </div>
-        </div>
+        </section>
         <foot/>
     </div>
 </template>
@@ -153,7 +153,6 @@
     height: 1200px;
     width: 101.1%;
     margin: 75px -15px;
-    
     z-index: -99;
     background-color: rgba(0, 0, 0, 0.562);
 }
@@ -169,6 +168,7 @@
     width: 100%;
     height: 600px;
     margin: 75px auto 0px;
+    display: flex;
 }
 .moviePoster {
     position: relative;

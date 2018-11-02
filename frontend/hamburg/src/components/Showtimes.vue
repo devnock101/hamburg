@@ -7,10 +7,10 @@
     <section v-else>
         <article>
             <div>
-                <p>{{ this.cinemas.cinema_name }}</p>
-                <p>{{ this.cinemas.distance }}</p>
+                <span>{{ this.cinemas.cinema_name }}</span>
+                <span>{{ this.cinemas.distance }}</span>
                 <ul class="list-unstyled" v-for="(_time, index) in this.cinemas.showings.Standard.times" :key="index">
-                    <p>{{ _time.start_time }} - {{ _time.end_time }}</p>
+                    <span>{{ _time.start_time }} - {{ _time.end_time }}</span>
                 </ul>
             </div>
         </article>
