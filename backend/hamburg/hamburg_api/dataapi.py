@@ -1,6 +1,7 @@
 """Business Logic Layer"""
 
 import logging
+from ast import literal_eval as le
 from datetime import datetime, timedelta
 from django.db.models import Q
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
@@ -114,15 +115,18 @@ class DataGetter():
     def get_email_alert_data(values=None):
         """get data from email_alert table"""
         if values is None:
-            values = ['id', 'movie_name', 'email']
+            values = ['id', 'movie_name', 'email', 'done', 'release_date']
         today = datetime.today().date()
         till = today + timedelta(ALERT_THRESHOLD)
-        alter_bool = Q(alert_date__isnull=False)
-        alert_cond = Q(alert_date=today)
-        release_lower = Q(release_date__gte=today)
-        release_upper = Q(release_date__lte=till)
-        dataset = EmailAlertModel.objects.filter((alter_bool & alert_cond)\
-                | (release_upper & release_lower)).values(*values)
+        not_done = Q(done=False)
+        _alter_bool = Q(alert_date__isnull=False)
+        _alert_cond = Q(alert_date=today)
+        _release_lower = Q(release_date__gte=today)
+        _release_upper = Q(release_date__lte=till)
+        # dataset = EmailAlertModel.objects.filter((alter_bool & alert_cond)\
+        #         | (release_upper & release_lower)).values(*values)
+        dataset = EmailAlertModel.objects.filter(not_done).\
+                values(*values)
         return dataset
 
 
