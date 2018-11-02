@@ -19,30 +19,27 @@
 
 <script>
     export default {
-        name: "Showtimes",
         mounted() {
-            console.log("Showtimes mounted");
             this.getShowtimes();
         },
-        updated() {
-            console.log("Showtimes updated");
-        },
+        name: "Showtimes",
         data() {
             return {
-                endpoint: process.env.VUE_APP_SHOWTIMES_ENDPOINT + this._query + "&imdb_id=" + this.imdb_id + "&movie_name=" + this.movie_name,
                 cinemas: '',
                 error: '',
+                type: '',
             }
         },
-        props: {
-            _query: '',
-            movie_name: '',
-            imdb_id: ''
-        },
+        props: [
+            'endpoint'
+        ],
         methods: {
             getShowtimes() {
-                this.$http.get(this.endpoint).then(
+                var _aux = this.endpoint.split(process.env.VUE_APP_DELIM);
+                this.type = _aux[1];
+                this.$http.get(_aux[0]).then(
                     function (response) {
+                        console.log(response);
                         this.cinemas = response.body.cinemas[0];
                         if (response.body.errors) {
                             this.error = response.body.errors[0];
@@ -53,56 +50,6 @@
                     function (response) {
                     }
                 );
-            },
-            getShowtimesDummy() {
-                var dummy = {
-                    "film": {
-                    },
-                    "cinemas": [
-                        {
-                            "cinema_id": 10506,
-                            "cinema_name": "Harkins Tempe Marketplace 16",
-                            "distance": 2.3831618641707,
-                            "logo_url": "https://assets.movieglu.com/chain_logos/us/UK-397-sq.jpg",
-                            "showings": {
-                                "Standard": {
-                                    "film_id": 247729,
-                                    "film_name": "Venom",
-                                    "times": [
-                                        {
-                                            "start_time": "10:00",
-                                            "end_time": "12:17"
-                                        },
-                                        {
-                                            "start_time": "12:35",
-                                            "end_time": "14:52"
-                                        },
-                                        {
-                                            "start_time": "15:15",
-                                            "end_time": "17:32"
-                                        },
-                                        {
-                                            "start_time": "17:50",
-                                            "end_time": "20:07"
-                                        },
-                                        {
-                                            "start_time": "20:30",
-                                            "end_time": "22:47"
-                                        },
-                                        {
-                                            "start_time": "23:00",
-                                            "end_time": "01:17"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    "status": {
-                    }
-                }
-                this.cinemas = dummy.cinemas[0];
-                this.error = "";
             }
         }
     }
