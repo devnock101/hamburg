@@ -35,29 +35,26 @@
             <div class="trailer container-fluid">
                 <youtube :video-id="result.video"></youtube>
             </div>
-        </section>
-        <section v-if="alert" class="mail conatiner-fluid d-inline-flex flex-row flex-now">
-            <span class="reminder">Reminder : </span>
-            <form @submit.prevent="setAlert" class="searchForm">
-                <b-input-group>
-                    <b-form-input v-model="email" v-validate="'required|email'" type="text" name="email"
-                                  placeholder="Email" class="searchBar"/>
-                    <span>{{ errors.first('email') }}</span>
-                </b-input-group>
-            </form>
-        </section>
-        <section v-else class="made container-fluid"/>
-        <foot/>
-        <Listing :endpoint="combine(endpoint_similar, 'Similar')">
-        </Listing>
-        <Listing :endpoint="combine(endpoint_recommended, 'Recommended')">
-        </Listing>
-        <div>
-            <button v-on:click="showShowtimes()">{{ showtime_text }}</button>
-            <div v-if="this.showtime_flag">
-                <Showtimes :endpoint="combine(endpoint_showtimes, 'Showtimes')"></Showtimes>
+            <section v-if="alert" class="mail conatiner-fluid d-inline-flex flex-row flex-now">
+                <span class="reminder">Get movie release alerts : </span>
+                <form @submit.prevent="setAlert" class="searchForm">
+                    <b-input-group>
+                        <b-form-input v-model="email" v-validate="'required|email'" type="text" name="email"
+                                    placeholder="Email" class="searchBar"/>
+                        <span>{{ errors.first('email') }}</span>
+                    </b-input-group>
+                </form>
+            </section>
+            <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
+            <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
+            <div>
+                <button v-on:click="showShowtimes()">{{ showtime_text }}</button>
+                <div v-if="this.showtime_flag">
+                    <Showtimes :endpoint="combine(endpoint_showtimes, 'Showtimes')"></Showtimes>
+                </div>
             </div>
-        </div>
+        </section>
+        <foot/>
     </div>
 </template>
 
@@ -151,203 +148,181 @@
 </script>
 
 <style scoped>
-    .backdrop {
-        position: absolute;
-        height: 1200px;
-        width: 101.1%;
-        margin: 75px -15px;
-        overflow: hidden;
-        z-index: -99;
-        background-color: rgba(0, 0, 0, 0.562);
-    }
+.backdrop {
+    position: fixed;
+    height: 1200px;
+    width: 101.1%;
+    margin: 75px -15px;
+    z-index: -99;
+    background-color: rgba(0, 0, 0, 0.562);
+}
+.backPoster {
+    width: 105%;
+    height: auto;
+    margin: -5px -15px 0px;
+    filter: blur(10px);
+    mix-blend-mode:overlay;
+}
+.context {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    margin: 75px auto 0px;
+    display: flex;
+}
+.moviePoster {
+    position: relative;
+    top: 15%;
+    left: 22%;
+    height: 450px;
+    width: 300px;
+    box-shadow: 0px 0px 40px #222;
+}
+.info {
+    position: relative;
+    top: -4%;
+    left: 30%;
+    width: 600px;
+}
+.movTitle {
+    position: absolute;
+    top: 20%;
+    color: white;
+    font-size: 36px;
+    text-shadow: 1px 1px 5px #333;
+    font-weight: bold;
 
-    .backPoster {
-        width: 105%;
-        height: auto;
-        margin: -5px -15px 0px;
-        object-fit: cover;
-        filter: blur(10px);
-        mix-blend-mode: overlay;
-    }
-
-    .context {
-        width: 100%;
-        height: 600px;
-        margin: 75px auto 0px;
-    }
-
-    .moviePoster {
-        position: relative;
-        top: 15%;
-        left: 22%;
-        height: 450px;
-        width: 300px;
-        box-shadow: 0px 0px 40px #222;
-    }
-
-    .info {
-        position: relative;
-        top: -4%;
-        left: 30%;
-        width: 600px;
-    }
-
-    .movTitle {
-        position: absolute;
-        top: 20%;
-        color: white;
-        font-size: 36px;
-        text-shadow: 1px 1px 5px #333;
-        font-weight: bold;
-
-    }
-
-    .movOverview {
-        position: absolute;
-        top: 46%;
-        color: white;
-        font-size: 24px;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movContext {
-        position: absolute;
-        top: 54%;
-        width: 750px;
-        color: white;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movRelease {
-        position: absolute;
-        top: 68%;
-        color: white;
-        font-size: 20px;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movDate {
-        position: absolute;
-        top: 68.5%;
-        left: 25%;
-        color: white;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movTag {
-        position: absolute;
-        top: 34%;
-        color: white;
-        font-size: 28px;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movTime {
-        position: absolute;
-        top: 68%;
-        left: 60%;
-        color: white;
-        font-size: 20px;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movDuration {
-        position: absolute;
-        top: 68.5%;
-        left: 78%;
-        color: white;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movPopu {
-        position: absolute;
-        top: 75%;
-        color: white;
-        font-size: 20px;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movPop {
-        position: absolute;
-        top: 75.5%;
-        left: 25%;
-        color: white;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movWeb {
-        position: absolute;
-        top: 75%;
-        left: 60%;
-        color: white;
-        font-size: 20px;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movAV {
-        position: absolute;
-        top: 82%;
-        color: white;
-        font-size: 20px;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movAVote {
-        position: absolute;
-        top: 83%;
-        left: 25%;
-        color: white;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movVC {
-        position: absolute;
-        top: 82%;
-        left: 60%;
-        color: white;
-        font-size: 20px;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .movVCount {
-        position: absolute;
-        top: 83%;
-        left: 80%;
-        color: white;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .trailer {
-        position: relative;
-        left: 33%;
-        height: 380px;
-    }
-
-    .made {
-        position: relative;
-        width: 100%;
-        padding-top: 56px;
-        padding-bottom: 48px;
-    }
-
-    .mail {
-        position: relative;
-        width: 100%;
-        padding-top: 56px;
-        padding-bottom: 48px;
-    }
-
-    .reminder {
-        position: relative;
-        left: 32%;
-        color: white;
-        font-size: 24px;
-        text-shadow: 1px 1px 5px #333;
-    }
-
-    .searchForm {
-        position: relative;
-        left: 34%;
-        width: 30%;
-    }
+}
+.movOverview {
+    position: absolute;
+    top: 46%;
+    color: white;
+    font-size: 24px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movContext {
+    position: absolute;
+    top: 54%;
+    width: 110%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movRelease {
+    position: absolute;
+    top: 68%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movDate {
+    position: absolute;
+    top: 68.5%;
+    left: 25%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movTag {
+    position: absolute;
+    top: 34%;
+    color: white;
+    font-size: 28px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movTime {
+    position: absolute;
+    top: 68%;
+    left: 60%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movDuration {
+    position: absolute;
+    top: 68.5%;
+    left: 78%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movPopu {
+    position: absolute;
+    top: 75%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movPop {
+    position: absolute;
+    top: 75.5%;
+    left: 25%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movWeb {
+    position: absolute;
+    top: 75%;
+    left: 60%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+    text-decoration: none;
+}
+.movAV {
+    position: absolute;
+    top: 82%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movAVote {
+    position: absolute;
+    top: 83%;
+    left: 25%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.movVC {
+    position: absolute;
+    top: 82%;
+    left: 60%;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #333;
+}
+.movVCount {
+    position: absolute;
+    top: 83%;
+    left: 80%;
+    color: white;
+    text-shadow: 1px 1px 5px #333;
+}
+.trailer {
+    position: relative;
+    left: 33%;
+    height: 380px;
+}
+.made {
+    position: relative;
+    width: 100%;
+    padding-top: 56px;
+    padding-bottom: 48px;
+}
+.mail {
+    position: relative;
+    width: 100%;
+    padding-top: 56px;
+    padding-bottom: 48px;
+    left:-8%;
+}
+.reminder {
+    position: relative;
+    left:32%;
+    color: white;
+    font-size: 24px;
+    text-shadow: 1px 1px 5px #333;
+}
+.searchForm {
+    position: relative;
+    left: 34%;
+    width: 30%;
+}
 </style>
