@@ -38,9 +38,9 @@
                 error: ''
             }
         },
-        props: {
-            endpoint: '',
-        },
+        props: [
+            'endpoint'
+        ],
         methods: {
             getDetails() {
                 var _aux = this.endpoint.split(process.env.VUE_APP_DELIM);
