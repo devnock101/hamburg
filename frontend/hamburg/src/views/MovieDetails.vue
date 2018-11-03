@@ -48,7 +48,7 @@
             <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
             <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
             <div>
-                <b-button @click="showShowtimes()" :variant="primary">{{ showtime_text }}</b-button>
+                <b-button @click="showShowtimes()">{{ showtime_text }}</b-button>
                 <div v-if="this.showtime_flag">
                     <Showtimes :endpoint="combine(endpoint_showtimes, 'Showtimes')"></Showtimes>
                 </div>
@@ -173,7 +173,7 @@
 .moviePoster {
     position: relative;
     top: 15%;
-    left: 22%;
+    left: 20%;
     height: 450px;
     width: 300px;
     box-shadow: 0px 0px 40px #222;
@@ -193,25 +193,25 @@
     font-weight: bold;
 }
 .movTag {
-    position: relative;
+    position: absolute;
     top: 29%;
-    left: -16%;
+    left: 0%;
     color: white;
     font-size: 28px;
     text-shadow: 1px 1px 5px #333;
 }
 .movOverview {
-    position: relative;
-    top: 38%;
-    left: -61%;
+    position: absolute;
+    top: 43%;
+    left: 0%;
     color: white;
     font-size: 24px;
     text-shadow: 1px 1px 5px #333;
 }
 .movContext {
     position: absolute;
-    top: 56%;
-    left: 2%;
+    top: 50%;
+    left: 0%;
     width: 100%;
     text-align: left;
     color: white;
@@ -219,22 +219,22 @@
 }
 .movRelease {
     position: absolute;
-    top: 83%;
-    left: 2%;
+    top: 73%;
+    left: 0%;
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
 }
 .movDate {
     position: absolute;
-    top: 83.5%;
+    top: 73.5%;
     left: 26%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movTime {
     position: absolute;
-    top: 83%;
+    top: 73%;
     left: 60%;
     color: white;
     font-size: 20px;
@@ -242,29 +242,29 @@
 }
 .movDuration {
     position: absolute;
-    top: 83.5%;
+    top: 73.5%;
     left: 78%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movPopu {
     position: absolute;
-    top: 88%;
-    left: 2%;
+    top: 78%;
+    left: 0%;
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
 }
 .movPop {
     position: absolute;
-    top: 88.5%;
+    top: 78.5%;
     left: 25%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movWeb {
     position: absolute;
-    top: 88%;
+    top: 78%;
     left: 60%;
     color: white;
     font-size: 20px;
@@ -273,22 +273,22 @@
 }
 .movAV {
     position: absolute;
-    top: 93%;
-    left: 2%;
+    top: 83%;
+    left: 0%;
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
 }
 .movAVote {
     position: absolute;
-    top: 93.5%;
+    top: 83.5%;
     left: 25%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movVC {
     position: absolute;
-    top: 93%;
+    top: 83%;
     left: 60%;
     color: white;
     font-size: 20px;
@@ -296,7 +296,7 @@
 }
 .movVCount {
     position: absolute;
-    top: 93.5%;
+    top: 83.5%;
     left: 80%;
     color: white;
     text-shadow: 1px 1px 5px #333;
@@ -321,7 +321,7 @@
 }
 .reminder {
     position: relative;
-    left:32%;
+    left:30%;
     color: white;
     font-size: 24px;
     text-shadow: 1px 1px 5px #333;
