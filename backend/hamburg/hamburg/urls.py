@@ -21,4 +21,13 @@ from hamburg_api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^api/v1/moviedb/search/$', views.SearchView.as_view()),
+    re_path(r'^api/v1/alerts/save/$', views.EmailAlertView.as_view()),
+    re_path(r'^api/v1/schedules/email/$', views.ScheduleRunView.as_view()),
+    re_path(r'^api/v1/moviedb/details/$', views.MovieDetailsView.as_view()),
+    re_path(r'^api/v1/moviedb/showtimes/$', views.ShowtimeDetailsView.as_view()),
+    re_path(r'^api/v1/moviedb/upcoming/$', views.UpcomingView.as_view()),
+    re_path(r'^api/v1/moviedb/popular/$', views.PopularView.as_view()),
+    re_path(r'^api/v1/moviedb/now_playing/$', views.NowPlayingView.as_view()),
+    re_path(r'^api/v1/moviedb/similar/$', views.SimilarView.as_view()),
+    re_path(r'^api/v1/moviedb/recommended/$', views.RecommendedView.as_view()),
 ]
