@@ -8,23 +8,23 @@
         </section>
         <section v-else>
             <div>
-                <div class="backdrop container-fluid">
+                <div class="backdrop container-fluid d-flex flex-column">
                     <b-img class="backPoster" :src="imgsrc+result.backdrop_path"/>
                 </div>
                 <div class="context conatiner-fluid d-inline-flex flex-row flex-now">
                     <b-img class="moviePoster" :src="imgsrc+result.poster_path"/>
                     <div class="info">
                         <span class="movTitle">{{ result.title }}</span>
+                        <span class="movTag" v-if="result.tagline">"{{ result.tagline }}"</span>
                         <span class="movOverview">Overview</span>
                         <span class="movContext">{{ result.overview }}</span>
                         <span class="movRelease">Release Date : </span>
                         <span class="movDate">{{ result.release_date }}</span>
-                        <span class="movTag" v-if="result.tagline">"{{ result.tagline }}"</span>
                         <span class="movTime">Duration : </span>
                         <span class="movDuration">{{ result.runtime }} min.</span>
                         <span class="movPopu">Popularity : </span>
                         <span class="movPop">{{ result.popularity }} %</span>
-                        <a class="movWeb" v-bind:href="result.homepage"><span>Website</span></a>
+                        <a class="movWeb" v-bind:href="result.homepage"><span>Movie Homepage</span></a>
                         <span class="movAV">Average Vote : </span>
                         <span class="movAVote">{{ result.vote_average }}</span>
                         <span class="movVC">Vote Count : </span>
@@ -35,7 +35,7 @@
             <div class="trailer container-fluid">
                 <youtube :video-id="result.video"></youtube>
             </div>
-            <section v-if="alert" class="mail conatiner-fluid d-inline-flex flex-row flex-now">
+            <section v-if="alert" class="mail conatiner-fluid d-flex flex-row flex-now">
                 <span class="reminder">Get movie release alerts : </span>
                 <form @submit.prevent="setAlert" class="searchForm">
                     <b-input-group>
@@ -48,7 +48,7 @@
             <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
             <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
             <div>
-                <button v-on:click="showShowtimes()">{{ showtime_text }}</button>
+                <b-button class="show" @click="showShowtimes()">{{ showtime_text }}</b-button>
                 <div v-if="this.showtime_flag">
                     <Showtimes :endpoint="combine(endpoint_showtimes, 'Showtimes')"></Showtimes>
                 </div>
@@ -113,7 +113,7 @@
                     }
                 })
             },
-            combine(_endpoint, _type) {
+            combine: function(_endpoint, _type) {
                 return _endpoint + process.env.VUE_APP_DELIM + _type;
             },
             showShowtimes: function () {
@@ -127,7 +127,7 @@
             }
         },
 
-        data() {
+        data: function() {
             return {
                 endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
                 endpoint_similar: process.env.VUE_APP_SIMILAR_ENDPOINT + this.$route.params.id,
@@ -173,7 +173,7 @@
 .moviePoster {
     position: relative;
     top: 15%;
-    left: 22%;
+    left: 20%;
     height: 450px;
     width: 300px;
     box-shadow: 0px 0px 40px #222;
@@ -185,52 +185,56 @@
     width: 600px;
 }
 .movTitle {
-    position: absolute;
+    position: relative;
     top: 20%;
     color: white;
     font-size: 36px;
     text-shadow: 1px 1px 5px #333;
     font-weight: bold;
-
+}
+.movTag {
+    position: absolute;
+    top: 30%;
+    left: 0%;
+    color: white;
+    font-size: 28px;
+    text-shadow: 1px 1px 5px #333;
 }
 .movOverview {
     position: absolute;
-    top: 46%;
+    top: 40%;
+    left: 0%;
     color: white;
     font-size: 24px;
     text-shadow: 1px 1px 5px #333;
 }
 .movContext {
     position: absolute;
-    top: 54%;
-    width: 110%;
+    top: 47%;
+    left: 0%;
+    width: 100%;
+    text-align: left;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movRelease {
     position: absolute;
-    top: 68%;
+    top: 73%;
+    left: 0%;
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
 }
 .movDate {
     position: absolute;
-    top: 68.5%;
-    left: 25%;
+    top: 73.5%;
+    left: 26%;
     color: white;
-    text-shadow: 1px 1px 5px #333;
-}
-.movTag {
-    position: absolute;
-    top: 34%;
-    color: white;
-    font-size: 28px;
     text-shadow: 1px 1px 5px #333;
 }
 .movTime {
     position: absolute;
-    top: 68%;
+    top: 73%;
     left: 60%;
     color: white;
     font-size: 20px;
@@ -238,28 +242,29 @@
 }
 .movDuration {
     position: absolute;
-    top: 68.5%;
+    top: 73.5%;
     left: 78%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movPopu {
     position: absolute;
-    top: 75%;
+    top: 78%;
+    left: 0%;
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
 }
 .movPop {
     position: absolute;
-    top: 75.5%;
+    top: 78.5%;
     left: 25%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movWeb {
     position: absolute;
-    top: 75%;
+    top: 78%;
     left: 60%;
     color: white;
     font-size: 20px;
@@ -268,21 +273,22 @@
 }
 .movAV {
     position: absolute;
-    top: 82%;
+    top: 83%;
+    left: 0%;
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
 }
 .movAVote {
     position: absolute;
-    top: 83%;
+    top: 83.5%;
     left: 25%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movVC {
     position: absolute;
-    top: 82%;
+    top: 83%;
     left: 60%;
     color: white;
     font-size: 20px;
@@ -290,7 +296,7 @@
 }
 .movVCount {
     position: absolute;
-    top: 83%;
+    top: 83.5%;
     left: 80%;
     color: white;
     text-shadow: 1px 1px 5px #333;
@@ -315,7 +321,7 @@
 }
 .reminder {
     position: relative;
-    left:32%;
+    left:30%;
     color: white;
     font-size: 24px;
     text-shadow: 1px 1px 5px #333;
@@ -324,5 +330,14 @@
     position: relative;
     left: 34%;
     width: 30%;
+}
+.show {
+    background-color:whitesmoke;
+    color: black;
+    border: none;
+    margin: 0px 30px 40px 30px;
+}
+.show:hover {
+    background-color: lightgrey;
 }
 </style>

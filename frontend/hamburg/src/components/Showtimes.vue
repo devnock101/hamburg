@@ -6,7 +6,7 @@
     </section>
     <section v-else>
         <article>
-            <div>
+            <div class="inTime container-fluid">
                 <span>{{ this.cinemas.cinema_name }}</span>
                 <span>{{ this.cinemas.distance }}</span>
                 <ul class="list-unstyled" v-for="(_time, index) in this.cinemas.showings.Standard.times" :key="index">
@@ -56,4 +56,8 @@
 </script>
 
 <style scoped>
+.inTime {
+    background-color: white;
+    margin: 0px 30px 40px 30px;
+}
 </style>
