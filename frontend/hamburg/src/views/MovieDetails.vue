@@ -48,7 +48,7 @@
             <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
             <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
             <div>
-                <b-button @click="showShowtimes()">{{ showtime_text }}</b-button>
+                <b-button class="show" @click="showShowtimes()">{{ showtime_text }}</b-button>
                 <div v-if="this.showtime_flag">
                     <Showtimes :endpoint="combine(endpoint_showtimes, 'Showtimes')"></Showtimes>
                 </div>
@@ -194,7 +194,7 @@
 }
 .movTag {
     position: absolute;
-    top: 29%;
+    top: 30%;
     left: 0%;
     color: white;
     font-size: 28px;
@@ -202,7 +202,7 @@
 }
 .movOverview {
     position: absolute;
-    top: 43%;
+    top: 40%;
     left: 0%;
     color: white;
     font-size: 24px;
@@ -210,7 +210,7 @@
 }
 .movContext {
     position: absolute;
-    top: 50%;
+    top: 47%;
     left: 0%;
     width: 100%;
     text-align: left;
@@ -330,5 +330,14 @@
     position: relative;
     left: 34%;
     width: 30%;
+}
+.show {
+    background-color:whitesmoke;
+    color: black;
+    border: none;
+    margin: 0px 30px 40px 30px;
+}
+.show:hover {
+    background-color: lightgrey;
 }
 </style>
