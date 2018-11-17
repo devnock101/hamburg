@@ -1,7 +1,9 @@
 
 <template>
   <div class="home">
-    <b-img class="backbase" src="http://orig08.deviantart.net/2315/f/2011/035/6/4/imdb_top_250_movie_poster_by_saxon1964-d38rnod.jpg"/>
+    <div class="backgr">
+      <b-img class="backbase" src="http://orig08.deviantart.net/2315/f/2011/035/6/4/imdb_top_250_movie_poster_by_saxon1964-d38rnod.jpg"/>
+    </div>
     <landing/>
   </div>
 </template>
@@ -22,11 +24,16 @@ export default {
 </script>
 
 <style scoped>
-.backbase {
-  background-color: rgba(0, 0, 0, 0.562);
+.backgr {
   position: fixed;
+  width: 101.1%;
   z-index: -99;
-  filter: blur(35px);
+  background-color: rgba(0, 0, 0, 0.562);
+}
+.backbase {
+  width: 102%;
+  filter: blur(20px);
+  margin: 0px -15px 0px;
   mix-blend-mode:overlay;
 }
 .landing {

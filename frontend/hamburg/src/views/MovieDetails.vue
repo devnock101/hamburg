@@ -168,6 +168,10 @@ export default {
 </script>
 
 <style scoped>
+.movie {
+    width: 100%;
+    overflow-x:hidden;
+}
 .backdrop {
   position: fixed;
   width: 101.1%;
