@@ -16,7 +16,8 @@ from hamburg.settings import MOVIEDB_API_KEY,\
         MOVIEGLU_API_CLIENT, MOVIEGLU_API_KEY, MOVIEGLU_API_AUTH,\
         MOVIEGLU_API_VERSION, MOVIEGLU_API_TERRITORY, MOVIEGLU_API_SEARCH,\
         MOVIEGLU_API_GEO, MOVIEGLU_API_SHOWTIME, MOVIEDB_API_KEYWORDS,\
-        MOVIEDB_API_CREDITS
+        MOVIEDB_API_CREDITS, REVIEW_KEY, KEYWORD_KEY, GENRE_KEY, SIMILAR_KEY,\
+        CREDIT_KEY, OVERVIEW_KEY
 from .models import EmailAlertModel, MovieIdMapperModel
 
 LOGGER = logging.getLogger(__name__)
@@ -359,8 +360,9 @@ class ExploreDataGetter(MovieDBResults):
     @staticmethod
     def _process(data):
         """process data"""
-        data['credit'] = ExploreDataGetter._process_credits(\
-                data['credit']['cast'])
+        explore = {}
+        data['credits'] = ExploreDataGetter._process_credits(\
+                data['credits']['cast'])
         data['keywords'] = ExploreDataGetter._process_keywords(\
                 data['keywords']['keywords'])
         data['reco'] = ExploreDataGetter._process_reco(\
@@ -371,54 +373,74 @@ class ExploreDataGetter(MovieDBResults):
                 data['details']['genres'])
         data['details'] = ExploreDataGetter._process_details(\
                 data['details'])
-        return data
+        explore['name'] = data['details'].pop('name')
+        explore['img'] = data['details'].pop('img')
+        explore['backdrop'] = data['details'].pop('backdrop')
+        explore['level'] = 0
+        explore['children'] = []
+        explore['children'].append({'name': 'Overview', 'level': 1, 'img': OVERVIEW_KEY,\
+                'children': [{key:value, 'level': 2, 'text_only': True,\
+                } for key, value in data['details'].items()]})
+        explore['children'].append({'name': 'Genres', 'level': 1, 'img': GENRE_KEY,\
+                'children': data['genres']})
+        explore['children'].append({'name': 'Keywords', 'level': 1, 'img': KEYWORD_KEY,\
+                'children': data['keywords']})
+        explore['children'].append({'name': 'Credits', 'level': 1, 'img': CREDIT_KEY,\
+                'children': data['credits']})
+        explore['children'].append({'name': 'Similar', 'level': 1, 'img': SIMILAR_KEY,\
+                'children': data['similar']})
+        explore['children'].append({'name': 'Review', 'level': 1, 'img': REVIEW_KEY,\
+                'children': data['reco']})
+        return explore
 
     @staticmethod
     def _process_details(data):
         """extract details"""
-        return {'name': data.get('overview'), 'status': data.get('status'),\
+        return {'name': data.get('title'), 'status': data.get('status'),\
                 'tagline': data.get('tagline'),\
                 'runtime': str(timedelta(minutes=data.get('runtime'))),\
                 'popularity': data.get('popularity'), 'vote_count': data.get('vote_count'),\
-                'vote_avg': data.get('vote_average')}
+                'vote_avg': data.get('vote_average'), 'overview': data.get('overview'),\
+                'img': data.get('poster_path'), 'backdrop': data.get('backdrop_path')}
 
     @staticmethod
-    def _process_genres(data):
+    def _process_genres(data, level=2):
         """extract genre"""
-        return [{'name': x['name']} for x in data]
+        return [{'name': x['name'], 'level': level, 'text_only': True} for x in data]
 
     @staticmethod
-    def _process_credits(data):
+    def _process_credits(data, level=2):
         """extract credits"""
         data = sorted(data, key=lambda x: x['cast_id'])
         data = data[:5] # get top 5
-        return [{'name': x['name'], 'character': x['character'], 'img': x['profile_path']}\
-                for x in data]
+        return [{'name': x['name'], 'level': level, 'text_only': False,\
+                'character': x['character'], 'img': x['profile_path']} for x in data]
 
     @staticmethod
-    def _process_reco(data):
+    def _process_reco(data, level=2):
         """extract reco"""
         data = data[:5] # get top 5, already sorted list
-        return [{'name': x['title'], 'img': x['poster_path']} for x in data]
+        return [{'name': x['title'], 'level': level, 'text_only': False,\
+                'img': x['poster_path']} for x in data]
 
     @staticmethod
-    def _process_similar(data):
+    def _process_similar(data, level=2):
         """extract similar"""
         data = data[:5] # get top 5, already sorted list
-        return [{'name': x['title'], 'img': x['poster_path']}\
-                for x in data]
+        return [{'name': x['title'], 'level': level, 'text_only': False,\
+                'img': x['poster_path']} for x in data]
 
     @staticmethod
-    def _process_keywords(data):
+    def _process_keywords(data, level=2):
         """extract keywords"""
-        return [{'name': x['name']} for x in data]
+        return [{'name': x['name'], 'level': level, 'text_only': True} for x in data]
 
     def get_explore_data(self):
         """get explore data"""
         self.data['details'] = MovieDetailsGetter(self.request).get_movie_details()
         self.data['similar'] = SimilarDetailsGetter(self.request).get_similar_movies()
         self.data['reco'] = RecoDetailsGetter(self.request).get_recommended_movies()
-        self.data['credit'] = CreditsGetter(self.request).get_credits()
+        self.data['credits'] = CreditsGetter(self.request).get_credits()
         self.data['keywords'] = MovieDBKeywordGetter(self.request).get_keywords()
         self.data['genres'] = None # filled while processing
         self.data = ExploreDataGetter._process(self.data)
