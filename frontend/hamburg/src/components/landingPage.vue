@@ -21,17 +21,19 @@
         <h3 class="subtext">Trending Movies</h3>
       </div>
       <div class="trend container-fluid">
-        <b-card-group deck class="d-inline-flex flex-row flex-now" v-for="(result, index) in trendz" :key="index">
+        <div class="d-inline-flex flex-row flex-now" v-for="(result, index) in trendz" :key="index">
             <b-link class="trendLink" v-bind:to="{name: 'details', params: {id: result.id}}">
-              <b-card class="decked" v-bind:title='result.title'
-                      title-tag=h5
-                      v-bind:img-src="backDropBase+result.poster_path"
-                      img-fluid
-                      img-alt="Img" 
-                      img-top
-                      align='center'/>
+              <b-card-group deck>
+                <b-card class="decked" v-bind:title="result.title | limit"
+                        title-tag=h5
+                        v-bind:img-src="backDropBase+result.poster_path"
+                        img-fluid
+                        img-alt="Img" 
+                        img-top
+                        align='center'/>
+              </b-card-group>
             </b-link> 
-        </b-card-group>
+        </div>
       </div>
       <foot/>
     </div>
@@ -55,6 +57,16 @@ export default {
   components: {
     headed,
     foot
+  },
+  filters:{
+    limit: function(value) {
+      value = value.toString()
+      if (value.length > 20) {
+        value = value.substring(0,10);
+        value = value + "..."
+      }
+      return value
+    }
   },
   mounted: function() {
     this.getTrends(),
