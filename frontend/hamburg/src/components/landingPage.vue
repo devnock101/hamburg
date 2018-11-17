@@ -5,7 +5,7 @@
         <b-carousel id="carousel"
                     controls
                     indicators
-                    :interval="2000">
+                    :interval="2500">
               <div v-for="(result, index) in now" :key="index">
                 <b-link class="movieLink" v-bind:to="{name: 'details', params: {id: result.id}}">  
                   <b-carousel-slide class="box">
@@ -21,10 +21,10 @@
         <h3 class="subtext">Trending Movies</h3>
       </div>
       <div class="trend container-fluid">
-        <div class="d-inline-flex flex-row flex-now" v-for="(result, index) in trendz" :key="index">
+        <div v-for="(result, index) in trendz" :key="index">
             <b-link class="trendLink" v-bind:to="{name: 'details', params: {id: result.id}}">
-              <b-card-group deck>
-                <b-card class="decked" v-bind:title="result.title | limit"
+              <b-card-group class="d-flex flex-fill flex-row flex-now h-100">
+                <b-card class="decked" v-bind:title="result.title"
                         title-tag=h5
                         v-bind:img-src="backDropBase+result.poster_path"
                         img-fluid
@@ -123,7 +123,7 @@ export default {
   margin: 54px auto 0px;
   max-width: 100%;
   height: 650px;
-  box-shadow: 0px 0px 40px #666;
+  box-shadow: 0px 0px 40px #222;
   z-index: 1;
 }
 .box {
@@ -142,6 +142,10 @@ export default {
   text-decoration: none;
   scroll-behavior: smooth;
 }
+.trendLink {
+  text-decoration: none;
+  color: #333;
+}
 .decked {
   min-width: 220px;
   min-height: 220px;
@@ -149,10 +153,6 @@ export default {
   box-shadow: 0px 0px 40px #333;
   margin: 0px 25px;
   border-radius: 7px;
-}
-.trendLink {
-  text-decoration: none;
-  color: #333;
 }
 </style>
 
