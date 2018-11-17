@@ -14,26 +14,40 @@
                 <div class="context conatiner-fluid d-inline-flex flex-row flex-now">
                     <b-img class="moviePoster" :src="imgsrc+result.poster_path"/>
                     <div class="info">
-                        <span class="movTitle">{{ result.title }}</span>
-                        <span class="movTag" v-if="result.tagline">"{{ result.tagline }}"</span>
-                        <span class="movOverview">Overview</span>
-                        <span class="movContext">{{ result.overview }}</span>
-                        <span class="movRelease">Release Date : </span>
-                        <span class="movDate">{{ result.release_date }}</span>
-                        <span class="movTime">Duration : </span>
-                        <span class="movDuration">{{ result.runtime }} min.</span>
-                        <span class="movPopu">Popularity : </span>
-                        <span class="movPop">{{ result.popularity }} %</span>
-                        <a class="movWeb" v-bind:href="result.homepage"><span>Movie Homepage</span></a>
-                        <span class="movAV">Average Vote : </span>
-                        <span class="movAVote">{{ result.vote_average }}</span>
-                        <span class="movVC">Vote Count : </span>
-                        <span class="movVCount">{{ result.vote_count }}</span>
+                        <div class="mov0">
+                            <span class="movTitle">{{ result.title }}</span>
+                        </div>
+                        <div class="mov1">
+                            <span class="movTag" v-if="result.tagline">"{{ result.tagline }}"</span>
+                        </div>
+                        <div class="mov2">
+                            <span class="movOverview">Overview</span>
+                        </div>
+                        <div class="mov3">
+                            <span class="movContext">{{ result.overview }}</span>
+                        </div>
+                        <div class="mov4">
+                            <span class="movRelease">Release Date : </span>
+                            <span class="movDate">{{ result.release_date }}</span>
+                            <span class="movTime">Duration : </span>
+                            <span class="movDuration">{{ result.runtime }} min.</span>
+                        </div>
+                        <div class="mov5">
+                            <span class="movPopu">Popularity : </span>
+                            <span class="movPop">{{ result.popularity }} %</span>
+                            <a class="movWeb" v-bind:href="result.homepage"><span>Movie Homepage</span></a>
+                        </div>
+                        <div class="mov6">
+                            <span class="movAV">Average Vote : </span>
+                            <span class="movAVote">{{ result.vote_average }}</span>
+                            <span class="movVC">Vote Count : </span>
+                            <span class="movVCount">{{ result.vote_count }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="trailer container-fluid">
-                <youtube :video-id="result.video"></youtube>
+                <youtube class="vid" :video-id="result.video"/>
             </div>
             <section v-if="alert" class="mail conatiner-fluid d-flex flex-row flex-now">
                 <span class="reminder">Get movie release alerts : </span>
@@ -184,6 +198,10 @@
     left: 30%;
     width: 600px;
 }
+.mov0 {
+    position: relative;
+    top: 18%;
+}
 .movTitle {
     position: relative;
     top: 20%;
@@ -192,33 +210,49 @@
     text-shadow: 1px 1px 5px #333;
     font-weight: bold;
 }
+.mov1 {
+    position: relative;
+    top: 20%;
+}
 .movTag {
-    position: absolute;
+    position: relative;
     top: 30%;
     left: 0%;
     color: white;
     font-size: 28px;
     text-shadow: 1px 1px 5px #333;
 }
+.mov2 {
+    position: relative;
+    top: 25%;
+}
 .movOverview {
     position: absolute;
-    top: 40%;
+    top: 0%;
     left: 0%;
     color: white;
     font-size: 24px;
     text-shadow: 1px 1px 5px #333;
 }
+.mov3 {
+    position: relative;
+    top: 32%;
+}
 .movContext {
-    position: absolute;
-    top: 47%;
+    position: relative;
+    top: 60%;
     left: 0%;
     width: 100%;
-    text-align: left;
+    
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
+.mov4 {
+    position: relative;
+    top: 35%;
+}
 .movRelease {
-    position: absolute;
+    position: relative;
     top: 73%;
     left: 0%;
     color: white;
@@ -226,29 +260,33 @@
     text-shadow: 1px 1px 5px #333;
 }
 .movDate {
-    position: absolute;
+    position: relative;
     top: 73.5%;
-    left: 26%;
+    left: 2%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movTime {
-    position: absolute;
+    position: relative;
     top: 73%;
-    left: 60%;
+    left: 25%;
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
 }
 .movDuration {
-    position: absolute;
+    position: relative;
     top: 73.5%;
-    left: 78%;
+    left: 27%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
+.mov5 {
+    position: relative;
+    top: 35%;
+}
 .movPopu {
-    position: absolute;
+    position: relative;
     top: 78%;
     left: 0%;
     color: white;
@@ -256,23 +294,27 @@
     text-shadow: 1px 1px 5px #333;
 }
 .movPop {
-    position: absolute;
+    position: relative;
     top: 78.5%;
-    left: 25%;
+    left: 2%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movWeb {
-    position: absolute;
+    position: relative;
     top: 78%;
-    left: 60%;
+    left: 32%;
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
     text-decoration: none;
 }
+.mov6 {
+    position: relative;
+    top: 35%;
+}
 .movAV {
-    position: absolute;
+    position: relative;
     top: 83%;
     left: 0%;
     color: white;
@@ -280,24 +322,24 @@
     text-shadow: 1px 1px 5px #333;
 }
 .movAVote {
-    position: absolute;
+    position: relative;
     top: 83.5%;
-    left: 25%;
+    left: 2%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
 .movVC {
-    position: absolute;
+    position: relative;
     top: 83%;
-    left: 60%;
+    left: 35%;
     color: white;
     font-size: 20px;
     text-shadow: 1px 1px 5px #333;
 }
 .movVCount {
-    position: absolute;
+    position: relative;
     top: 83.5%;
-    left: 80%;
+    left: 37%;
     color: white;
     text-shadow: 1px 1px 5px #333;
 }
@@ -305,6 +347,9 @@
     position: relative;
     left: 33%;
     height: 380px;
+}
+.vid {
+    position: relative;
 }
 .made {
     position: relative;
