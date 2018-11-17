@@ -7,7 +7,8 @@ from .dataapi import SearchResultGetter, EmailAlertCreater,\
         DataGetter, ShowtimeDetailsGetter, MovieDetailsGetter,\
         UpcomingDetailsGetter, PopularDetailsGetter,\
         NowPlayingDetailsGetter, MovieTrailerGetter,\
-        SimilarDetailsGetter, RecoDetailsGetter
+        SimilarDetailsGetter, RecoDetailsGetter,\
+        ExploreDataGetter
 from .decorators import error_decorator
 
 
@@ -139,4 +140,17 @@ class RecommendedView(APIView):
     def get(request):
         """get results based on the search parameter"""
         response = RecoDetailsGetter(request).get_recommended_movies()
+        return Response(response) # pragma: no cover
+
+
+class ExploreView(APIView):
+    """Explore Movie"""
+    throttle_classes = (UserRateThrottle,)
+    http_method_names = ['get']
+
+    @staticmethod
+    @error_decorator
+    def get(request):
+        """get results based on the search parameter"""
+        response = ExploreDataGetter(request).get_explore_data()
         return Response(response) # pragma: no cover

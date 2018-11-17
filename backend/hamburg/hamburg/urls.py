@@ -30,4 +30,5 @@ urlpatterns = [
     re_path(r'^api/v1/moviedb/now_playing/$', views.NowPlayingView.as_view()),
     re_path(r'^api/v1/moviedb/similar/$', views.SimilarView.as_view()),
     re_path(r'^api/v1/moviedb/recommended/$', views.RecommendedView.as_view()),
+    re_path(r'^api/v1/moviedb/explore/$', views.ExploreView.as_view()),
 ]
