@@ -1,3 +1,10 @@
+/*
+Based on:
+1. http://bl.ocks.org/eesur/be2abfb3155a38be4de4
+2. https://bl.ocks.org/mbostock/1093130
+3. http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
+*/
+
 <template>
     <div id="graph"></div>
 </template>
@@ -29,7 +36,7 @@
 
                         let force = d3.layout.force()
                             .linkDistance(200)
-                            .charge(-4000)
+                            .charge(-2000)
                             .size([width, height])
                             .on("tick", tick);
 
@@ -57,16 +64,28 @@
                                 'stdDeviation': 7
                             });
 
+                        var linearGradient = defs.append("linearGradient")
+                            .attr("id", "text-gradient");
+                        linearGradient.append("stop")
+                            .attr("offset", "0%")
+                            .attr("stop-color", "#16222a");
+                        linearGradient.append("stop")
+                            .attr("offset", "33%")
+                            .attr("stop-color", "#16222a");
+                        linearGradient.append("stop")
+                            .attr("offset", "66%")
+                            .attr("stop-color", "#3a6073");
+
                         function checkFill(d) {
                             if (d.text_only === true) {
-                                return "#eee";
+                                return "url(#text-gradient)";
                             }
                             return "url(#" + myConcat(d.name, d.level) + ")";
                         }
 
                         function fillText(d) {
                             if (d.text_only === true) {
-                                return d.tooltip;
+                                return d.name;
                             }
                             return '';
                         }
@@ -76,6 +95,22 @@
                         let i = 0;
                         root = response.body;
                         createDefs(root);
+                        let preloadDefs = document.getElementsByTagName("defs");
+                        function preload() {
+                            let imageObj = new Image();
+                            let images = [];
+                            let childNodes = preloadDefs[0].childNodes;
+                            childNodes.forEach(function (child) {
+                                let href = child.firstChild.href;
+                                if (href !== undefined) {
+                                    images.push(href.baseVal)
+                                }
+                            });
+                            for (let i = 0; i < images.length; i++) {
+                                imageObj.src = images[i];
+                            }
+                        }
+                        preload();
                         svg.append("rect")
                             .attr("width", "100%")
                             .attr("height", "100%")
@@ -151,9 +186,9 @@
                                         return 62;
                                     if (d.text_only === true) {
                                         side = 2 * 40 * Math.cos(Math.PI / 4);
-                                        return 40;
+                                        return 35;
                                     }
-                                    return 25;
+                                    return 30;
                                 })
                                 .style("fill", function (d) {
                                     return checkFill(d);
@@ -163,7 +198,7 @@
                                     div.transition()
                                         .duration(200)
                                         .style("opacity", .9);
-                                    div.html(d.name)
+                                    div.html(d.tooltip || d.name)
                                         .style("left", (d3.event.pageX) + "px")
                                         .style("top", (d3.event.pageY - 28) + "px");
                                 })
@@ -178,12 +213,6 @@
                                     return fillText(d);
                                 })
                                 .attr("dy", ".35em");
-
-                            /*    .attr("width", side)
-                                .attr("height", side)
-                                .html(function (d) {
-                                    return fillText(d);
-                                });*/
                         }
 
                         function tick() {
@@ -201,12 +230,10 @@
                             node.attr("transform", nodeTransform);
                         }
 
-                        // Toggle children on click.
-                        function click(d) {
-                            if (d3.event.defaultPrevented) return; // ignore drag
-                            if (d.visibility === true) {
-                                d.visibility = false;
-                                if (d.children) {
+                        function updateNodes(d) {
+                            if (d.children) {
+                                d.children.forEach(function (node) {
+                                    updateNodes(node);
                                     let uid = new Set();
                                     {
                                         d.children.forEach(function (node) {
@@ -229,12 +256,21 @@
                                         }
                                         links = linksNew;
                                     }
-                                    d._children = d.children;
-                                    d.children = null;
-                                } else {
-                                    d.children = d._children;
-                                    d._children = null;
-                                }
+                                });
+                                d._children = d.children;
+                                d.children = null;
+                            } else {
+                                d.children = d._children;
+                                d._children = null;
+                            }
+                        }
+
+                        // Toggle children on click.
+                        function click(d) {
+                            if (d3.event.defaultPrevented) return; // ignore drag
+                            if (d.visibility === true) {
+                                d.visibility = false;
+                                updateNodes(d);
                             }
                             else {
                                 d.visibility = true;
@@ -273,11 +309,10 @@
                             return '';
                         }
 
-
                         function getBaseURL(level) {
                             if (level === 1)
                                 return process.env.VUE_APP_IMAGE_CDN;
-                            return process.env.VUE_APP_POSTER_BASE
+                            return process.env.VUE_APP_POSTER_BASE_780
                         }
 
                         function createDefs(root) {
@@ -287,7 +322,6 @@
                                 .attr("id", myConcat(root.name, root.level))
                                 .attr("width", 1)
                                 .attr("height", 1)
-                                .attr("preserveAspectRatio", "none")
                                 .append("svg:image")
                                 .attr("href", getBaseURL(root.level) + root.img)
                                 .attr("preserveAspectRatio", "none")
@@ -302,14 +336,14 @@
                                 .append("svg:image")
                                 .attr("href", getBaseURL(root.level) + root.backdrop)
                                 .attr("viewBox", "0 0 " + width + " " + height)
-                                .attr("preserveAspectRatio", "xMidYMin slice")
+                                .attr("preserveAspectRatio", "xMidYMid slice")
                                 .attr("width", width)
                                 .attr("height", height)
                                 .attr("x", 0)
                                 .attr("y", 0);
 
-                            let _wx = 50;
-                            let _hx = 50;
+                            let _wx = 60;
+                            let _hx = 60;
 
                             function recurse(node) {
                                 if (node.children) node.children.forEach(recurse);
@@ -321,7 +355,8 @@
                                         .attr("preserveAspectRatio", "none")
                                         .append("svg:image")
                                         .attr("href", getBaseURL(node.level) + node.img)
-                                        .attr("preserveAspectRatio", "none")
+                                        .attr("viewBox", "0 0 " + _wx + " " + _hx)
+                                        .attr("preserveAspectRatio", "xMidYMid slice")
                                         .attr("width", _wx)
                                         .attr("height", _hx)
                                         .attr("x", 0)
@@ -354,10 +389,12 @@
     @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,600);
 
     text {
-        font-family: "Source Code Pro", Consolas, monaco, monospace;
+        font-family: Consolas, monaco, monospace;
         font-size: 12px;
         text-anchor: middle;
         pointer-events: none;
+        color: white;
+        stroke: white;
     }
 
     body {
