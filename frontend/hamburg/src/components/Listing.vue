@@ -8,20 +8,21 @@
         <section v-else-if="this.results.length !== 0">
             <span class="typed">{{ this.type }} Movies</span>
             <div class="listed container-fluid">
-                <b-card-group deck class="d-inline-flex flex-row flex-now" v-for="(result, index) 
-                    in this.results" :key="index">
+                <div v-for="(result, index) in this.results" :key="index">
                     <keep-alive>
                         <b-link class="trendLink" v-bind:to="{name: 'details', params: {id: result.id}}">
-                            <b-card class="decked" v-bind:title='result.title'
-                                    title-tag=h5
-                                    v-bind:img-src="posterBase+result.poster_path"
-                                    img-fluid
-                                    img-alt="Img" 
-                                    img-top
-                                    align='center'/>
+                            <b-card-group class="d-flex flex-fill flex-row flex-now h-100" >
+                                <b-card class="decked" v-bind:title='result.title'
+                                        title-tag=h5
+                                        v-bind:img-src="posterBase+result.poster_path"
+                                        img-fluid
+                                        img-alt="Img" 
+                                        img-top
+                                        align='center'/>
+                            </b-card-group>
                         </b-link>
                     </keep-alive>
-                </b-card-group>
+                </div>
             </div>
         </section>
     </div>
