@@ -59,6 +59,7 @@ GENRE_KEY = os.environ['GENRE_KEY']
 SIMILAR_KEY = os.environ['SIMILAR_KEY']
 CREDIT_KEY = os.environ['CREDIT_KEY']
 OVERVIEW_KEY = os.environ['OVERVIEW_KEY']
+MOVIEDB_API_REVIEW = os.environ['MOVIEDB_API_REVIEW']
 ALLOWED_HOSTS = ['*']
 
 

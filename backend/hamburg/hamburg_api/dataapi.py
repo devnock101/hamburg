@@ -17,7 +17,7 @@ from hamburg.settings import MOVIEDB_API_KEY,\
         MOVIEGLU_API_VERSION, MOVIEGLU_API_TERRITORY, MOVIEGLU_API_SEARCH,\
         MOVIEGLU_API_GEO, MOVIEGLU_API_SHOWTIME, MOVIEDB_API_KEYWORDS,\
         MOVIEDB_API_CREDITS, REVIEW_KEY, KEYWORD_KEY, GENRE_KEY, SIMILAR_KEY,\
-        CREDIT_KEY, OVERVIEW_KEY
+        CREDIT_KEY, OVERVIEW_KEY, MOVIEDB_API_REVIEW
 from .models import EmailAlertModel, MovieIdMapperModel
 
 LOGGER = logging.getLogger(__name__)
@@ -65,6 +65,7 @@ class MovieDBResults():
         self.results_key = 'results'
         self.keywords = MOVIEDB_API_KEYWORDS
         self.credits = MOVIEDB_API_CREDITS
+        self.reviews = MOVIEDB_API_REVIEW
 
     @staticmethod
     def add_request_param(resource, key, param, delim):
@@ -349,6 +350,21 @@ class CreditsGetter(MovieDBResults):
                     language="en-US", region="US")
 
 
+class ReviewsGetter(MovieDBResults):
+    """get reviews associated with a movie"""
+
+    def __init__(self, request):
+        super().__init__()
+        self.request = request
+
+    def get_reviews(self):
+        """get reviews"""
+        self.query = self.request.query_params['query']
+        self.reviews = self.reviews.format(self.query)
+        return SimpleGetter.get_simple(self.base, self.reviews, self.key, self.key_text,\
+                    language="en-US", region="US")
+
+
 class ExploreDataGetter(MovieDBResults):
     """ExploreMovie Data"""
 
@@ -365,8 +381,8 @@ class ExploreDataGetter(MovieDBResults):
                 data['credits']['cast'])
         data['keywords'] = ExploreDataGetter._process_keywords(\
                 data['keywords']['keywords'])
-        data['reco'] = ExploreDataGetter._process_reco(\
-                data['reco']['results'])
+        data['reviews'] = ExploreDataGetter._process_reviews(\
+                data['reviews']['results'])
         data['similar'] = ExploreDataGetter._process_similar(\
                 data['similar']['results'])
         data['genres'] = ExploreDataGetter._process_genres(\
@@ -379,7 +395,7 @@ class ExploreDataGetter(MovieDBResults):
         explore['level'] = 0
         explore['children'] = []
         explore['children'].append({'name': 'Overview', 'tooltip': 'Overview', 'level': 1,\
-                'img': OVERVIEW_KEY, 'children': [{'tooltip': key, 'name': value, 'level': 2,\
+                'img': OVERVIEW_KEY, 'children': [{'tooltip': value, 'name': key, 'level': 2,\
                 'text_only': True} for key, value in data['details'].items()]})
         explore['children'].append({'name': 'Genres', 'tooltip': 'Genres', 'level': 1,\
                         'img': GENRE_KEY, 'children': data['genres']})
@@ -390,7 +406,7 @@ class ExploreDataGetter(MovieDBResults):
         explore['children'].append({'name': 'Similar', 'level': 1, 'tooltip': 'Similar',\
                 'img': SIMILAR_KEY, 'children': data['similar']})
         explore['children'].append({'name': 'Reviews', 'level': 1, 'tooltip': 'Reviews',\
-                'img': REVIEW_KEY, 'children': data['reco']})
+                'img': REVIEW_KEY, 'children': data['reviews']})
         return explore
 
     @staticmethod
@@ -420,11 +436,11 @@ class ExploreDataGetter(MovieDBResults):
                 'tooltip': x['name']} for x in data]
 
     @staticmethod
-    def _process_reco(data, level=2):
-        """extract reco"""
+    def _process_reviews(data, level=2):
+        """extract reviews"""
         data = data[:5] # get top 5, already sorted list
-        return [{'name': x['title'], 'level': level, 'text_only': False,\
-                'img': x['poster_path'], 'tooltip': x['title']} for x in data]
+        return [{'name': x['author'], 'level': level, 'text_only': True,\
+                'tooltip': x['content']} for x in data]
 
     @staticmethod
     def _process_similar(data, level=2):
@@ -443,7 +459,7 @@ class ExploreDataGetter(MovieDBResults):
         """get explore data"""
         self.data['details'] = MovieDetailsGetter(self.request).get_movie_details()
         self.data['similar'] = SimilarDetailsGetter(self.request).get_similar_movies()
-        self.data['reco'] = RecoDetailsGetter(self.request).get_recommended_movies()
+        self.data['reviews'] = ReviewsGetter(self.request).get_reviews()
         self.data['credits'] = CreditsGetter(self.request).get_credits()
         self.data['keywords'] = MovieDBKeywordGetter(self.request).get_keywords()
         self.data['genres'] = None # filled while processing
