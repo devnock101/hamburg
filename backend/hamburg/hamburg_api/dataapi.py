@@ -378,19 +378,19 @@ class ExploreDataGetter(MovieDBResults):
         explore['backdrop'] = data['details'].pop('backdrop')
         explore['level'] = 0
         explore['children'] = []
-        explore['children'].append({'name': 'Overview', 'level': 1, 'img': OVERVIEW_KEY,\
-                'children': [{key:value, 'level': 2, 'text_only': True,\
-                } for key, value in data['details'].items()]})
-        explore['children'].append({'name': 'Genres', 'level': 1, 'img': GENRE_KEY,\
-                'children': data['genres']})
-        explore['children'].append({'name': 'Keywords', 'level': 1, 'img': KEYWORD_KEY,\
-                'children': data['keywords']})
-        explore['children'].append({'name': 'Credits', 'level': 1, 'img': CREDIT_KEY,\
-                'children': data['credits']})
-        explore['children'].append({'name': 'Similar', 'level': 1, 'img': SIMILAR_KEY,\
-                'children': data['similar']})
-        explore['children'].append({'name': 'Review', 'level': 1, 'img': REVIEW_KEY,\
-                'children': data['reco']})
+        explore['children'].append({'name': 'Overview', 'tooltip': 'Overview', 'level': 1,\
+                'img': OVERVIEW_KEY, 'children': [{'tooltip': key, 'name': value, 'level': 2,\
+                'text_only': True} for key, value in data['details'].items()]})
+        explore['children'].append({'name': 'Genres', 'tooltip': 'Genres', 'level': 1,\
+                        'img': GENRE_KEY, 'children': data['genres']})
+        explore['children'].append({'name': 'Keywords', 'tooltip': 'Keywords', 'level': 1,\
+                'img': KEYWORD_KEY, 'children': data['keywords']})
+        explore['children'].append({'name': 'Credits', 'level': 1, 'tooltip': 'Credits',\
+                'img': CREDIT_KEY, 'children': data['credits']})
+        explore['children'].append({'name': 'Similar', 'level': 1, 'tooltip': 'Similar',\
+                'img': SIMILAR_KEY, 'children': data['similar']})
+        explore['children'].append({'name': 'Reviews', 'level': 1, 'tooltip': 'Reviews',\
+                'img': REVIEW_KEY, 'children': data['reco']})
         return explore
 
     @staticmethod
@@ -401,12 +401,14 @@ class ExploreDataGetter(MovieDBResults):
                 'runtime': str(timedelta(minutes=data.get('runtime'))),\
                 'popularity': data.get('popularity'), 'vote_count': data.get('vote_count'),\
                 'vote_avg': data.get('vote_average'), 'overview': data.get('overview'),\
-                'img': data.get('poster_path'), 'backdrop': data.get('backdrop_path')}
+                'img': data.get('poster_path'), 'backdrop': data.get('backdrop_path'),\
+                'realease_date': data.get('release_date')}
 
     @staticmethod
     def _process_genres(data, level=2):
         """extract genre"""
-        return [{'name': x['name'], 'level': level, 'text_only': True} for x in data]
+        return [{'name': x['name'], 'level': level, 'text_only': True,\
+                'tooltip': x['name']} for x in data]
 
     @staticmethod
     def _process_credits(data, level=2):
@@ -414,26 +416,28 @@ class ExploreDataGetter(MovieDBResults):
         data = sorted(data, key=lambda x: x['cast_id'])
         data = data[:5] # get top 5
         return [{'name': x['name'], 'level': level, 'text_only': False,\
-                'character': x['character'], 'img': x['profile_path']} for x in data]
+                'character': x['character'], 'img': x['profile_path'],\
+                'tooltip': x['name']} for x in data]
 
     @staticmethod
     def _process_reco(data, level=2):
         """extract reco"""
         data = data[:5] # get top 5, already sorted list
         return [{'name': x['title'], 'level': level, 'text_only': False,\
-                'img': x['poster_path']} for x in data]
+                'img': x['poster_path'], 'tooltip': x['title']} for x in data]
 
     @staticmethod
     def _process_similar(data, level=2):
         """extract similar"""
         data = data[:5] # get top 5, already sorted list
         return [{'name': x['title'], 'level': level, 'text_only': False,\
-                'img': x['poster_path']} for x in data]
+                'img': x['poster_path'], 'tooltip': x['title']} for x in data]
 
     @staticmethod
     def _process_keywords(data, level=2):
         """extract keywords"""
-        return [{'name': x['name'], 'level': level, 'text_only': True} for x in data]
+        return [{'name': x['name'], 'level': level, 'text_only': True, 'tooltip': x['name']}\
+                for x in data]
 
     def get_explore_data(self):
         """get explore data"""
