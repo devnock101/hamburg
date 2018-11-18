@@ -25,7 +25,7 @@ export default new Router({
             component: Search
         },
         {
-            path: '/explore/:id',
+            path: '/explore/:mid',
             name: 'explore',
             component: ExploreMovie
         }

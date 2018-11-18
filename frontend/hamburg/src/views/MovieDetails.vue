@@ -44,7 +44,7 @@
                             <span class="movVCount">{{ result.vote_count }}</span>
                         </div>
                         <div class="mov7">
-                            <b-btn v-bind:to="{name: 'explore', params: {id: result.id}}">Explore Movie</b-btn>
+                            <b-btn v-bind:to="{name: 'explore', params: {mid: result.id}}">Explore Movie</b-btn>
                         </div>
                     </div>
                 </div>

@@ -8,11 +8,9 @@
     export default {
         name: "ExploreMovie",
         mounted: function () {
-            console.log("ExploreMovie beforeCreate");
             this.getDetails();
         },
         updated: function () {
-            console.log("ExploreMovie Updated");
         },
         components: {
             headed,
@@ -25,6 +23,7 @@
                         let d3 = require("d3");
                         let maxNodeSize = 50, root;
                         let graphDiv = document.getElementById("graph");
+                        let side = 0;
                         const width = graphDiv.clientWidth;
                         const height = graphDiv.clientHeight;
 
@@ -58,22 +57,32 @@
                                 'stdDeviation': 7
                             });
 
-                        d3.json(process.env.VUE_APP_EXPLORE_ENDPOINT + this.$route.params.id, function (error, json) {
-                            if (error) throw error;
-                            root = json;
-                            createDefs(root);
-                            svg.append("rect")
-                                .attr("width", "100%")
-                                .attr("height", "100%")
-                                .attr("class", "myRect")
-                                .attr("filter", 'url(#blur)')
-                                .style("fill", "url(#" + root.name + root.level + "backdrop)")
-                            update(root);
-                        });
+                        function checkFill(d) {
+                            if (d.text_only === true) {
+                                return "#eee";
+                            }
+                            return "url(#" + myConcat(d.name, d.level) + ")";
+                        }
+
+                        function fillText(d) {
+                            if (d.text_only === true) {
+                                return d.tooltip;
+                            }
+                            return '';
+                        }
 
                         let nodes = [];
                         let links = [];
                         let i = 0;
+                        root = response.body;
+                        createDefs(root);
+                        svg.append("rect")
+                            .attr("width", "100%")
+                            .attr("height", "100%")
+                            .attr("class", "myRect")
+                            .attr("filter", 'url(#blur)')
+                            .style("fill", "url(#" + myConcat(root.name, root.level) + "backdrop)");
+                        update(root);
 
                         function update(_root) {
                             let _aux = flatten(_root);
@@ -140,12 +149,14 @@
                                 .attr("r", function (d) {
                                     if (d.level === 0)
                                         return 62;
+                                    if (d.text_only === true) {
+                                        side = 2 * 40 * Math.cos(Math.PI / 4);
+                                        return 40;
+                                    }
                                     return 25;
-                                    return Math.sqrt(d.size) || 4.5;
                                 })
-                                .style("fill", "#000")
                                 .style("fill", function (d) {
-                                    return "url(#" + d.name + d.level + ")";
+                                    return checkFill(d);
                                 })
                                 .style("stroke", "black")
                                 .on("mouseover", function (d) {
@@ -161,6 +172,18 @@
                                         .duration(500)
                                         .style("opacity", 0);
                                 });
+
+                            nodeEnter.append("text")
+                                .text(function (d) {
+                                    return fillText(d);
+                                })
+                                .attr("dy", ".35em");
+
+                            /*    .attr("width", side)
+                                .attr("height", side)
+                                .html(function (d) {
+                                    return fillText(d);
+                                });*/
                         }
 
                         function tick() {
@@ -180,13 +203,10 @@
 
                         // Toggle children on click.
                         function click(d) {
-                            console.log("CLICK");
                             if (d3.event.defaultPrevented) return; // ignore drag
                             if (d.visibility === true) {
                                 d.visibility = false;
                                 if (d.children) {
-                                    console.log(nodes);
-                                    console.log(links);
                                     let uid = new Set();
                                     {
                                         d.children.forEach(function (node) {
@@ -199,7 +219,6 @@
                                             }
                                         }
                                         nodes = nodesNew;
-                                        console.log(nodes);
                                     }
                                     {
                                         let linksNew = [];
@@ -209,7 +228,6 @@
                                                 linksNew.push(links[_i]);
                                         }
                                         links = linksNew;
-                                        console.log(links);
                                     }
                                     d._children = d.children;
                                     d.children = null;
@@ -227,7 +245,6 @@
                         // Returns a list of all nodes under the root.
                         function flatten(_root) {
                             let _nodes = [];
-                            console.log("FLATTEN");
                             _root.visibility = true;
                             if (_root.children) {
                                 _root.children.forEach(function (node) {
@@ -243,27 +260,47 @@
                             return [_root, _nodes];
                         }
 
+                        function myConcat(a, b) {
+                            if (typeof a === 'string' && a !== undefined && b !== undefined && typeof b === 'string') {
+                                return a.replace(/\s/g, '') + b.replace(/\s/g, '');
+                            } else if (typeof a === 'string' && a !== undefined && b !== undefined) {
+                                return a.replace(/\s/g, '') + b;
+                            } else if (a !== undefined && b !== undefined && typeof b === 'string') {
+                                return a + b.replace(/\s/g, '');
+                            } else if (a !== undefined && b !== undefined) {
+                                return a + b;
+                            }
+                            return '';
+                        }
+
+
+                        function getBaseURL(level) {
+                            if (level === 1)
+                                return process.env.VUE_APP_IMAGE_CDN;
+                            return process.env.VUE_APP_POSTER_BASE
+                        }
+
                         function createDefs(root) {
                             let _w = 500 / 4;
                             let _h = 750 / 4;
                             defs.append("svg:pattern")
-                                .attr("id", root.name + root.level)
+                                .attr("id", myConcat(root.name, root.level))
                                 .attr("width", 1)
                                 .attr("height", 1)
                                 .attr("preserveAspectRatio", "none")
                                 .append("svg:image")
-                                .attr("href", process.env.VUE_APP_POSTER_BASE + root.img)
+                                .attr("href", getBaseURL(root.level) + root.img)
                                 .attr("preserveAspectRatio", "none")
                                 .attr("width", _w)
                                 .attr("height", _h)
                                 .attr("x", 0)
                                 .attr("y", 0);
                             defs.append("svg:pattern")
-                                .attr("id", root.name + root.level + 'backdrop')
+                                .attr("id", myConcat(root.name, root.level) + 'backdrop')
                                 .attr("width", 1)
                                 .attr("height", 1)
                                 .append("svg:image")
-                                .attr("href", process.env.VUE_APP_POSTER_BASE + root.backdrop)
+                                .attr("href", getBaseURL(root.level) + root.backdrop)
                                 .attr("viewBox", "0 0 " + width + " " + height)
                                 .attr("preserveAspectRatio", "xMidYMin slice")
                                 .attr("width", width)
@@ -276,18 +313,20 @@
 
                             function recurse(node) {
                                 if (node.children) node.children.forEach(recurse);
-                                defs.append("svg:pattern")
-                                    .attr("id", node.name + node.level)
-                                    .attr("width", 1)
-                                    .attr("height", 1)
-                                    .attr("preserveAspectRatio", "none")
-                                    .append("svg:image")
-                                    .attr("href", node.img)
-                                    .attr("preserveAspectRatio", "none")
-                                    .attr("width", _wx)
-                                    .attr("height", _hx)
-                                    .attr("x", 0)
-                                    .attr("y", 0);
+                                if (node.text_only === false || node.text_only === undefined) {
+                                    defs.append("svg:pattern")
+                                        .attr("id", myConcat(node.name, node.level))
+                                        .attr("width", 1)
+                                        .attr("height", 1)
+                                        .attr("preserveAspectRatio", "none")
+                                        .append("svg:image")
+                                        .attr("href", getBaseURL(node.level) + node.img)
+                                        .attr("preserveAspectRatio", "none")
+                                        .attr("width", _wx)
+                                        .attr("height", _hx)
+                                        .attr("x", 0)
+                                        .attr("y", 0);
+                                }
                             }
 
                             recurse(root);
@@ -298,21 +337,14 @@
                             d.y = Math.max(maxNodeSize, Math.min(height - (d.imgheight / 2 || 16), d.y));
                             return "translate(" + d.x + "," + d.y + ")";
                         }
-                    })
+                    });
             },
             function(response) {
             }
         },
         data: function () {
             return {
-                endpoint: process.env.VUE_APP_EXPLORE_ENDPOINT + this.$route.params.id,
-                imgsrc: process.env.VUE_APP_POSTER_BASE,
-                result: "",
-                error: "",
-                alert: false,
-                email: "",
-                title: "",
-                release_date: "",
+                endpoint: process.env.VUE_APP_EXPLORE_ENDPOINT + this.$route.params.mid,
             };
         }
     }
@@ -320,6 +352,13 @@
 <style>
 
     @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,600);
+
+    text {
+        font-family: "Source Code Pro", Consolas, monaco, monospace;
+        font-size: 12px;
+        text-anchor: middle;
+        pointer-events: none;
+    }
 
     body {
         font-family: "Source Code Pro", Consolas, monaco, monospace;
@@ -363,8 +402,8 @@
     div.tooltip {
         position: absolute;
         text-align: center;
-        width: 120px;
-        height: 28px;
+        width: auto;
+        height: auto;
         padding: 2px;
         background: lightsteelblue;
         border: 0px;
