@@ -85,7 +85,7 @@
    }
 </script>
 
-<style>
+<style scoped>
 .backbuild {
   position: fixed;
   min-width: 105%;
