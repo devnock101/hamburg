@@ -1,7 +1,6 @@
 """Business Logic Layer"""
 
 import logging
-from ast import literal_eval as le
 from datetime import datetime, timedelta
 from django.db.models import Q
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
@@ -16,7 +15,9 @@ from hamburg.settings import MOVIEDB_API_KEY,\
         MOVIEDB_API_SIMILAR, MOVIEDB_API_RECO, MOVIEGLU_API_BASE,\
         MOVIEGLU_API_CLIENT, MOVIEGLU_API_KEY, MOVIEGLU_API_AUTH,\
         MOVIEGLU_API_VERSION, MOVIEGLU_API_TERRITORY, MOVIEGLU_API_SEARCH,\
-        MOVIEGLU_API_GEO, MOVIEGLU_API_SHOWTIME
+        MOVIEGLU_API_GEO, MOVIEGLU_API_SHOWTIME, MOVIEDB_API_KEYWORDS,\
+        MOVIEDB_API_CREDITS, REVIEW_KEY, KEYWORD_KEY, GENRE_KEY, SIMILAR_KEY,\
+        CREDIT_KEY, OVERVIEW_KEY, MOVIEDB_API_REVIEW
 from .models import EmailAlertModel, MovieIdMapperModel
 
 LOGGER = logging.getLogger(__name__)
@@ -61,6 +62,10 @@ class MovieDBResults():
         self.movieglu_search = MOVIEGLU_API_SEARCH
         self.movieglu_showtimes = MOVIEGLU_API_SHOWTIME
         self.movieglu_query_text = "film_id"
+        self.results_key = 'results'
+        self.keywords = MOVIEDB_API_KEYWORDS
+        self.credits = MOVIEDB_API_CREDITS
+        self.reviews = MOVIEDB_API_REVIEW
 
     @staticmethod
     def add_request_param(resource, key, param, delim):
@@ -263,8 +268,10 @@ class SimilarDetailsGetter(MovieDBResults):
         """get movie trailer"""
         self.query = self.request.query_params['query']
         self.similar = self.similar.format(self.query)
-        return SimpleGetter.get_simple(self.base, self.similar, self.key, self.key_text,\
+        similar = SimpleGetter.get_simple(self.base, self.similar, self.key, self.key_text,\
                     language="en-US", region="US")
+        similar[self.results_key] = Rank.get_ranked(similar[self.results_key])
+        return similar
 
 
 class RecoDetailsGetter(MovieDBResults):
@@ -277,8 +284,10 @@ class RecoDetailsGetter(MovieDBResults):
         """get movie trailer"""
         self.query = self.request.query_params['query']
         self.reco = self.reco.format(self.query)
-        return SimpleGetter.get_simple(self.base, self.reco, self.key, self.key_text,\
+        reco = SimpleGetter.get_simple(self.base, self.reco, self.key, self.key_text,\
                     language="en-US", region="US")
+        reco[self.results_key] = Rank.get_ranked(reco[self.results_key])
+        return reco
 
 
 class SimpleGetter():
@@ -299,3 +308,160 @@ class SimpleGetter():
         LOGGER.info("API ENDPOINT: %s", api_endpoint)
         data = requests.get(api_endpoint, headers=headers).json()
         return data # pragma: no cover
+
+
+class Rank():
+    """Rank a list of movies"""
+
+    @staticmethod
+    def get_ranked(data):
+        """get ranked data"""
+        return sorted(data, key=lambda x: (x['release_date'],\
+                x['popularity'], x['vote_count']), reverse=True)
+
+
+class MovieDBKeywordGetter(MovieDBResults):
+    """get keywords associated with a movie"""
+
+    def __init__(self, request):
+        super().__init__()
+        self.request = request
+
+    def get_keywords(self):
+        """get keywords"""
+        self.query = self.request.query_params['query']
+        self.keywords = self.keywords.format(self.query)
+        return SimpleGetter.get_simple(self.base, self.keywords, self.key, self.key_text,\
+                    language="en-US", region="US")
+
+
+class CreditsGetter(MovieDBResults):
+    """get credits associated with a movie"""
+
+    def __init__(self, request):
+        super().__init__()
+        self.request = request
+
+    def get_credits(self):
+        """get credits"""
+        self.query = self.request.query_params['query']
+        self.credits = self.credits.format(self.query)
+        return SimpleGetter.get_simple(self.base, self.credits, self.key, self.key_text,\
+                    language="en-US", region="US")
+
+
+class ReviewsGetter(MovieDBResults):
+    """get reviews associated with a movie"""
+
+    def __init__(self, request):
+        super().__init__()
+        self.request = request
+
+    def get_reviews(self):
+        """get reviews"""
+        self.query = self.request.query_params['query']
+        self.reviews = self.reviews.format(self.query)
+        return SimpleGetter.get_simple(self.base, self.reviews, self.key, self.key_text,\
+                    language="en-US", region="US")
+
+
+class ExploreDataGetter(MovieDBResults):
+    """ExploreMovie Data"""
+
+    def __init__(self, request):
+        super().__init__()
+        self.request = request
+        self.data = {}
+
+    @staticmethod
+    def _process(data):
+        """process data"""
+        explore = {}
+        data['credits'] = ExploreDataGetter._process_credits(\
+                data['credits']['cast'])
+        data['keywords'] = ExploreDataGetter._process_keywords(\
+                data['keywords']['keywords'])
+        data['reviews'] = ExploreDataGetter._process_reviews(\
+                data['reviews']['results'])
+        data['similar'] = ExploreDataGetter._process_similar(\
+                data['similar']['results'])
+        data['genres'] = ExploreDataGetter._process_genres(\
+                data['details']['genres'])
+        data['details'] = ExploreDataGetter._process_details(\
+                data['details'])
+        explore['name'] = data['details'].pop('name')
+        explore['img'] = data['details'].pop('img')
+        explore['backdrop'] = data['details'].pop('backdrop')
+        explore['level'] = 0
+        explore['children'] = []
+        explore['children'].append({'name': 'Overview', 'tooltip': 'Overview', 'level': 1,\
+                'img': OVERVIEW_KEY, 'children': [{'tooltip': value, 'name': key, 'level': 2,\
+                'text_only': True} for key, value in data['details'].items()]})
+        explore['children'].append({'name': 'Genres', 'tooltip': 'Genres', 'level': 1,\
+                        'img': GENRE_KEY, 'children': data['genres']})
+        explore['children'].append({'name': 'Keywords', 'tooltip': 'Keywords', 'level': 1,\
+                'img': KEYWORD_KEY, 'children': data['keywords']})
+        explore['children'].append({'name': 'Credits', 'level': 1, 'tooltip': 'Credits',\
+                'img': CREDIT_KEY, 'children': data['credits']})
+        explore['children'].append({'name': 'Similar', 'level': 1, 'tooltip': 'Similar',\
+                'img': SIMILAR_KEY, 'children': data['similar']})
+        explore['children'].append({'name': 'Reviews', 'level': 1, 'tooltip': 'Reviews',\
+                'img': REVIEW_KEY, 'children': data['reviews']})
+        return explore
+
+    @staticmethod
+    def _process_details(data):
+        """extract details"""
+        return {'name': data.get('title'), 'status': data.get('status'),\
+                'tagline': data.get('tagline'),\
+                'runtime': str(timedelta(minutes=data.get('runtime'))),\
+                'popularity': data.get('popularity'), 'vote_count': data.get('vote_count'),\
+                'vote_avg': data.get('vote_average'), 'overview': data.get('overview'),\
+                'img': data.get('poster_path'), 'backdrop': data.get('backdrop_path'),\
+                'realease_date': data.get('release_date')}
+
+    @staticmethod
+    def _process_genres(data, level=2):
+        """extract genre"""
+        return [{'name': x['name'], 'level': level, 'text_only': True,\
+                'tooltip': x['name']} for x in data]
+
+    @staticmethod
+    def _process_credits(data, level=2):
+        """extract credits"""
+        data = sorted(data, key=lambda x: x['cast_id'])
+        data = data[:5] # get top 5
+        return [{'name': x['name'], 'level': level, 'text_only': False,\
+                'character': x['character'], 'img': x['profile_path'],\
+                'tooltip': x['name']} for x in data]
+
+    @staticmethod
+    def _process_reviews(data, level=2):
+        """extract reviews"""
+        data = data[:5] # get top 5, already sorted list
+        return [{'name': x['author'], 'level': level, 'text_only': True,\
+                'tooltip': x['content']} for x in data]
+
+    @staticmethod
+    def _process_similar(data, level=2):
+        """extract similar"""
+        data = data[:5] # get top 5, already sorted list
+        return [{'name': x['title'], 'level': level, 'text_only': False,\
+                'img': x['poster_path'], 'tooltip': x['title']} for x in data]
+
+    @staticmethod
+    def _process_keywords(data, level=2):
+        """extract keywords"""
+        return [{'name': x['name'], 'level': level, 'text_only': True, 'tooltip': x['name']}\
+                for x in data]
+
+    def get_explore_data(self):
+        """get explore data"""
+        self.data['details'] = MovieDetailsGetter(self.request).get_movie_details()
+        self.data['similar'] = SimilarDetailsGetter(self.request).get_similar_movies()
+        self.data['reviews'] = ReviewsGetter(self.request).get_reviews()
+        self.data['credits'] = CreditsGetter(self.request).get_credits()
+        self.data['keywords'] = MovieDBKeywordGetter(self.request).get_keywords()
+        self.data['genres'] = None # filled while processing
+        self.data = ExploreDataGetter._process(self.data)
+        return self.data
