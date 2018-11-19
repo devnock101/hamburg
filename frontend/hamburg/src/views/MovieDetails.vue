@@ -59,8 +59,12 @@
                     </b-input-group>
                 </form>
             </div>
-            <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
-            <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
+            <div class="movs1">
+              <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
+            </div>
+            <div class="movs2">
+              <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
+            </div>
             <div>
                 <b-button class="show" @click="showShowtimes()">{{ showtime_text }}</b-button>
                 <div v-if="this.showtime_flag">
@@ -183,6 +187,7 @@ export default {
   margin: 0px -15px 0px;
   filter: blur(10px);
   mix-blend-mode: overlay;
+  image-rendering: optimizeSpeed;
 }
 .context {
   position: relative;
@@ -198,6 +203,7 @@ export default {
   height: 450px;
   width: 300px;
   box-shadow: 0px 0px 40px #222;
+  image-rendering: optimizeSpeed;
 }
 .info {
   position: relative;
@@ -382,6 +388,12 @@ export default {
   position: relative;
   left: 34%;
   width: 30%;
+}
+.movs1 {
+  max-height: 550px;
+}
+.movs2 {
+  max-height: 550px;
 }
 .show {
   background-color: whitesmoke;
