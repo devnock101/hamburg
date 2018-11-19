@@ -43,8 +43,11 @@
                             <span class="movVC">Vote Count : </span>
                             <span class="movVCount">{{ result.vote_count }}</span>
                         </div>
+                        <div class="mov7">
+                            <b-btn class="movWeb" v-bind:to="{name: 'explore', params: {mid: result.id}}">Explore Movie</b-btn>
+                        </div>
                     </div>
-                </div>    
+                </div>
             </div>
             <div class="trailer container-fluid">
                 <youtube class="vid" :video-id="result.video"/>
@@ -54,7 +57,7 @@
                 <form @submit.prevent="setAlert" class="searchForm">
                     <b-input-group>
                         <b-form-input v-model="email" v-validate="'required|email'" type="text" name="email"
-                                    placeholder="Email" class="searchBar"/>
+                                      placeholder="Email" class="searchBar"/>
                         <span>{{ errors.first('email') }}</span>
                     </b-input-group>
                 </form>
@@ -77,98 +80,99 @@
 </template>
 
 <script>
-import headed from "@/components/headerSection.vue";
-import foot from "@/components/footerSection.vue";
-import Listing from "@/components/Listing";
-import Showtimes from "@/components/Showtimes.vue";
+    import headed from "@/components/headerSection.vue";
+    import foot from "@/components/footerSection.vue";
+    import Listing from "@/components/Listing";
+    import Showtimes from "@/components/Showtimes.vue";
 
-export default {
-  name: "MovieDetails",
-  mounted: function() {
-    console.log("MovieDetails beforeCreate");
-    this.getDetails();
-  },
-  updated: function() {
-    console.log("MovieDetails Updated");
-  },
-  components: {
-    headed,
-    foot,
-    Listing,
-    Showtimes
-  },
-  methods: {
-    getDetails: function() {
-      this.$http.get(this.endpoint).then(
-        function(response) {
-          this.result = response.body;
-          this.endpoint_showtimes =
-            process.env.VUE_APP_SHOWTIMES_ENDPOINT +
-            this.result.id +
-            "&imdb_id=" +
-            this.result.imdb_id +
-            "&movie_name=" +
-            this.result.title;
-          this.alert = Date.now() < Date.parse(this.result.release_date);
-          if (response.body.errors) {
-            this.error = response.body.errors[0];
-          } else {
-            this.error = "";
-          }
+    export default {
+        name: "MovieDetails",
+        mounted: function () {
+            console.log("MovieDetails beforeCreate");
+            this.getDetails();
         },
-        function(response) {}
-      );
-    },
-    setAlert: function() {
-      this.$validator.validateAll().then(response => {
-        if (response) {
-          this.$http
-            .post(process.env.VUE_APP_ALERT_ENDPOINT, {
-              email: this.email,
-              movie_name: this.result.title,
-              release_date: this.result.release_date
-            })
-            .then(function(response) {});
-          alert("Alert Set!");
-        } else {
-          alert("Error in email.!");
+        updated: function () {
+            console.log("MovieDetails Updated");
+        },
+        components: {
+            headed,
+            foot,
+            Listing,
+            Showtimes
+        },
+        methods: {
+            getDetails: function () {
+                this.$http.get(this.endpoint).then(
+                    function (response) {
+                        this.result = response.body;
+                        this.endpoint_showtimes =
+                            process.env.VUE_APP_SHOWTIMES_ENDPOINT +
+                            this.result.id +
+                            "&imdb_id=" +
+                            this.result.imdb_id +
+                            "&movie_name=" +
+                            this.result.title;
+                        this.alert = Date.now() < Date.parse(this.result.release_date);
+                        if (response.body.errors) {
+                            this.error = response.body.errors[0];
+                        } else {
+                            this.error = "";
+                        }
+                    },
+                    function (response) {
+                    }
+                );
+            },
+            setAlert: function () {
+                this.$validator.validateAll().then(response => {
+                    if (response) {
+                        this.$http
+                            .post(process.env.VUE_APP_ALERT_ENDPOINT, {
+                                email: this.email,
+                                movie_name: this.result.title,
+                                release_date: this.result.release_date
+                            })
+                            .then(function (response) {
+                            });
+                        alert("Alert Set!");
+                    } else {
+                        alert("Error in email.!");
+                    }
+                });
+            },
+            combine: function (_endpoint, _type) {
+                return _endpoint + process.env.VUE_APP_DELIM + _type;
+            },
+            showShowtimes: function () {
+                if (this.showtime_flag === false) {
+                    this.showtime_flag = true;
+                    this.showtime_text = "Hide Showtimes";
+                } else {
+                    this.showtime_flag = false;
+                    this.showtime_text = "View Showtimes";
+                }
+            },
+        },
+        data: function () {
+            return {
+                endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
+                endpoint_similar:
+                    process.env.VUE_APP_SIMILAR_ENDPOINT + this.$route.params.id,
+                endpoint_recommended:
+                    process.env.VUE_APP_RECOMMENDED_ENDPOINT + this.$route.params.id,
+                endpoint_showtimes: "",
+                imgsrc: process.env.VUE_APP_POSTER_BASE,
+                result: "",
+                error: "",
+                alert: false,
+                email: "",
+                title: "",
+                release_date: "",
+                showtime_flag: false,
+                showtime_text: "View Showtimes"
+            };
         }
-      });
-    },
-    combine: function(_endpoint, _type) {
-      return _endpoint + process.env.VUE_APP_DELIM + _type;
-    },
-    showShowtimes: function() {
-      if (this.showtime_flag === false) {
-        this.showtime_flag = true;
-        this.showtime_text = "Hide Showtimes";
-      } else {
-        this.showtime_flag = false;
-        this.showtime_text = "View Showtimes";
-      }
-    }
-  },
-
-  data: function() {
-    return {
-      endpoint: process.env.VUE_APP_DETAILS_ENDPOINT + this.$route.params.id,
-      endpoint_similar:
-        process.env.VUE_APP_SIMILAR_ENDPOINT + this.$route.params.id,
-      endpoint_recommended:
-        process.env.VUE_APP_RECOMMENDED_ENDPOINT + this.$route.params.id,
-      endpoint_showtimes: "",
-      imgsrc: process.env.VUE_APP_POSTER_BASE,
-      result: "",
-      error: "",
-      alert: false,
-      email: "",
-      title: "",
-      release_date: "",
-      showtime_flag: false,
-      showtime_text: "View Showtimes"
     };
-  }
-};
 </script>
 
 <style scoped>
@@ -326,6 +330,12 @@ export default {
   position: relative;
   top: 35%;
 }
+
+.mov7 {
+  position: relative;
+  top: 35%;
+}
+
 .movAV {
   position: relative;
   top: 83%;

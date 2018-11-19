@@ -12,6 +12,7 @@ import VeeValidate from 'vee-validate';
 require('process');
 if (process.env.NODE_ENV !== 'production') {
     Vue.config.productionTip = process.env.NODE_ENV === 'production';
+    let baseUrl = process.env.NODE_ENV === 'production' ? '/dist/' : '/';
 }
 
 Vue.use(BootstrapVue);
