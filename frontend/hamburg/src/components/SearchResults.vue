@@ -27,7 +27,7 @@
                         <transition name="fade">
                         <b-card class="bucket">
                             <b-media tag="li" class="my-4">
-                            <b-img slot="aside" v-bind:src="posterBase+result.poster_path" 
+                            <b-img slot="aside" v-bind:src="posterBase+result.poster_path"
                                 height="256" width="170" blank-color="#bbb" alt="alt"/>
                             <h5 class="mt-0 mt-1"><b>{{ result.title }}</b></h5>
                             <p class='releaseDate'>{{ result.release_date }}</p>
@@ -39,7 +39,7 @@
                 </ul>
             </section>
         </div>
-        <foot/>  
+        <foot/>
     </div>
 </template>
 
@@ -53,7 +53,7 @@
            this.getResults()
        },
        data: function() {
-           return { 
+           return {
                posterBase: process.env.VUE_APP_POSTER_BASE,
                results: {},
                error: ''

@@ -125,6 +125,7 @@ export default {
   height: 650px;
   box-shadow: 0px 0px 40px #222;
   z-index: 1;
+  image-rendering: optimizeSpeed;
 }
 .box {
   width: 105%;
@@ -140,19 +141,28 @@ export default {
   display: flex;
   overflow-x: scroll;
   text-decoration: none;
-  scroll-behavior: smooth;
 }
 .trendLink {
   text-decoration: none;
   color: #333;
 }
 .decked {
-  min-width: 220px;
+  width: 220px;
   min-height: 220px;
   object-fit: contain;
   box-shadow: 0px 0px 40px #333;
   margin: 0px 25px;
   border-radius: 7px;
+  image-rendering: optimizeSpeed;
+  scroll-behavior: smooth;
+}
+.decked:hover {
+  background-color: rgba(255,255,255,0.678);
+}
+.vertical-scrollbar
+{
+   overflow-x: hidden; /*for hiding horizontal scroll bar*/
+   overflow-y: auto; /*for vertical scroll bar*/
 }
 </style>
 
