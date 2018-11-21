@@ -6,7 +6,11 @@ Based on:
 */
 
 <template>
-    <div id="graph"></div>
+    <div id="graph">
+        <headed/>
+        <div class="local"/>
+        <!--<foot/>-->
+    </div>
 </template>
 <script>
     import headed from "@/components/headerSection.vue";
@@ -384,6 +388,7 @@ Based on:
         }
     }
 </script>
+
 <style>
 
     @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,600);
@@ -402,6 +407,12 @@ Based on:
         line-height: 160%;
         font-size: 16px;
         margin: 0;
+        background-color: black;
+    }
+
+    .local {
+        min-width: 100%;
+        mix-blend-mode: overlay;
     }
 
     path.link {

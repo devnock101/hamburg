@@ -195,8 +195,8 @@
 }
 .context {
   position: relative;
-  width: 100%;
   height: 700px;
+  width: 100%;
   margin: 75px auto 0px;
   display: flex;
 }
@@ -244,23 +244,18 @@
   top: 25%;
 }
 .movOverview {
-  position: absolute;
-  top: 0%;
-  left: 0%;
+  position: relative;
   color: white;
   font-size: 24px;
   text-shadow: 1px 1px 5px #333;
 }
 .mov3 {
   position: relative;
-  top: 32%;
+  top: 25%;
 }
 .movContext {
   position: relative;
   top: 60%;
-  left: 0%;
-  width: 100%;
-
   color: white;
   text-shadow: 1px 1px 5px #333;
 }
