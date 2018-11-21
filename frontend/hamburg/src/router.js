@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import MovieDetails from './views/MovieDetails.vue'
 import Search from './components/SearchResults.vue'
 import ExploreMovie from './views/ExploreMovie'
+import ShowtimesView from './views/ShowtimesView'
 
 Vue.use(Router);
 
@@ -28,6 +29,11 @@ export default new Router({
             path: '/explore/:mid',
             name: 'explore',
             component: ExploreMovie
+        },
+        {
+            path: '/showtime/:sid',
+            name: 'showtime',
+            component: ShowtimesView
         }
     ]
 })
