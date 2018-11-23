@@ -43,8 +43,14 @@
                             <span class="movVC">Vote Count : </span>
                             <span class="movVCount">{{ result.vote_count }}</span>
                         </div>
+                        <br/>
                         <div class="mov7">
-                            <b-btn class="movWeb" v-bind:to="{name: 'explore', params: {mid: result.id}}">Explore Movie</b-btn>
+                            <b-btn class="movAV" v-bind:to="{name: 'explore', params: {mid: result.id}}">Explore
+                                Movie
+                            </b-btn>
+                            <b-btn class="movVC" v-bind:to="{name: 'showtime', params: {sid: result.id, imdb:result.imdb_id, name: result.title}}">
+                                View Showtimes
+                            </b-btn>
                         </div>
                     </div>
                 </div>
@@ -63,16 +69,10 @@
                 </form>
             </div>
             <div class="movs1">
-              <Listing :endpoint = "combine(endpoint_similar, 'Similar')"/>
+                <Listing :endpoint="combine(endpoint_similar, 'Similar')"/>
             </div>
             <div class="movs2">
-              <Listing :endpoint = "combine(endpoint_recommended, 'Recommended')"/>
-            </div>
-            <div>
-                <b-button class="show" @click="showShowtimes()">{{ showtime_text }}</b-button>
-                <div v-if="this.showtime_flag">
-                    <Showtimes :endpoint="combine(endpoint_showtimes, 'Showtimes')"></Showtimes>
-                </div>
+                <Listing :endpoint="combine(endpoint_recommended, 'Recommended')"/>
             </div>
         </div>
         <foot/>
@@ -83,22 +83,18 @@
     import headed from "@/components/headerSection.vue";
     import foot from "@/components/footerSection.vue";
     import Listing from "@/components/Listing";
-    import Showtimes from "@/components/Showtimes.vue";
 
     export default {
         name: "MovieDetails",
         mounted: function () {
-            console.log("MovieDetails beforeCreate");
             this.getDetails();
         },
         updated: function () {
-            console.log("MovieDetails Updated");
         },
         components: {
             headed,
             foot,
             Listing,
-            Showtimes
         },
         methods: {
             getDetails: function () {
@@ -176,237 +172,278 @@
 </script>
 
 <style scoped>
-.movie {
-    width: 100%;
-    overflow-x:hidden;
-}
-.backdrop {
-  position: fixed;
-  width: 101.1%;
-  z-index: -99;
-  background-color: rgba(0, 0, 0, 0.562);
-}
-.backPoster {
-  width: 102%;
-  margin: 0px -15px 0px;
-  filter: blur(10px);
-  mix-blend-mode: overlay;
-  image-rendering: optimizeSpeed;
-}
-.context {
-  position: relative;
-  height: 700px;
-  width: 100%;
-  margin: 75px auto 0px;
-  display: flex;
-}
-.moviePoster {
-  position: relative;
-  top: 15%;
-  left: 20%;
-  height: 450px;
-  width: 300px;
-  box-shadow: 0px 0px 40px #222;
-  image-rendering: optimizeSpeed;
-}
-.info {
-  position: relative;
-  top: -4%;
-  left: 30%;
-  width: 600px;
-}
-.mov0 {
-  position: relative;
-  top: 18%;
-}
-.movTitle {
-  position: relative;
-  top: 20%;
-  color: white;
-  font-size: 36px;
-  text-shadow: 1px 1px 5px #333;
-  font-weight: bold;
-}
-.mov1 {
-  position: relative;
-  top: 20%;
-}
-.movTag {
-  position: relative;
-  top: 30%;
-  left: 0%;
-  color: white;
-  font-size: 28px;
-  text-shadow: 1px 1px 5px #333;
-}
-.mov2 {
-  position: relative;
-  top: 25%;
-}
-.movOverview {
-  position: relative;
-  color: white;
-  font-size: 24px;
-  text-shadow: 1px 1px 5px #333;
-}
-.mov3 {
-  position: relative;
-  top: 25%;
-}
-.movContext {
-  position: relative;
-  top: 60%;
-  color: white;
-  text-shadow: 1px 1px 5px #333;
-}
-.mov4 {
-  position: relative;
-  top: 35%;
-}
-.movRelease {
-  position: relative;
-  top: 73%;
-  left: 0%;
-  color: white;
-  font-size: 20px;
-  text-shadow: 1px 1px 5px #333;
-}
-.movDate {
-  position: relative;
-  top: 73.5%;
-  left: 2%;
-  color: white;
-  text-shadow: 1px 1px 5px #333;
-}
-.movTime {
-  position: relative;
-  top: 73%;
-  left: 25%;
-  color: white;
-  font-size: 20px;
-  text-shadow: 1px 1px 5px #333;
-}
-.movDuration {
-  position: relative;
-  top: 73.5%;
-  left: 27%;
-  color: white;
-  text-shadow: 1px 1px 5px #333;
-}
-.mov5 {
-  position: relative;
-  top: 35%;
-}
-.movPopu {
-  position: relative;
-  top: 78%;
-  left: 0%;
-  color: white;
-  font-size: 20px;
-  text-shadow: 1px 1px 5px #333;
-}
-.movPop {
-  position: relative;
-  top: 78.5%;
-  left: 2%;
-  color: white;
-  text-shadow: 1px 1px 5px #333;
-}
-.movWeb {
-  position: relative;
-  top: 78%;
-  left: 32%;
-  color: white;
-  font-size: 20px;
-  text-shadow: 1px 1px 5px #333;
-  text-decoration: none;
-}
-.mov6 {
-  position: relative;
-  top: 35%;
-}
+    .movie {
+        width: 100%;
+        overflow-x: hidden;
+    }
 
-.mov7 {
-  position: relative;
-  top: 35%;
-}
+    .backdrop {
+        position: fixed;
+        width: 101.1%;
+        z-index: -99;
+        background-color: rgba(0, 0, 0, 0.562);
+    }
 
-.movAV {
-  position: relative;
-  top: 83%;
-  left: 0%;
-  color: white;
-  font-size: 20px;
-  text-shadow: 1px 1px 5px #333;
-}
-.movAVote {
-  position: relative;
-  top: 83.5%;
-  left: 2%;
-  color: white;
-  text-shadow: 1px 1px 5px #333;
-}
-.movVC {
-  position: relative;
-  top: 83%;
-  left: 35%;
-  color: white;
-  font-size: 20px;
-  text-shadow: 1px 1px 5px #333;
-}
-.movVCount {
-  position: relative;
-  top: 83.5%;
-  left: 37%;
-  color: white;
-  text-shadow: 1px 1px 5px #333;
-}
-.trailer {
-  position: relative;
-  left: 33%;
-  height: 380px;
-}
-.vid {
-  position: relative;
-}
-.made {
-  position: relative;
-  width: 100%;
-  padding-top: 56px;
-  padding-bottom: 48px;
-}
-.mail {
-  position: relative;
-  width: 100%;
-  padding-top: 56px;
-  padding-bottom: 48px;
-  left: -8%;
-}
-.reminder {
-  position: relative;
-  left: 30%;
-  color: white;
-  font-size: 24px;
-  text-shadow: 1px 1px 5px #333;
-}
-.searchForm {
-  position: relative;
-  left: 34%;
-  width: 30%;
-}
-.movs1 {
-  max-height: 550px;
-}
-.movs2 {
-  max-height: 550px;
-}
-.show {
-  background-color: whitesmoke;
-  color: black;
-  border: none;
-  margin: 0px 30px 40px 30px;
-}
-.show:hover {
-  background-color: lightgrey;
-}
+    .backPoster {
+        width: 102%;
+        margin: 0px -15px 0px;
+        filter: blur(10px);
+        mix-blend-mode: overlay;
+        image-rendering: optimizeSpeed;
+    }
+
+    .context {
+        position: relative;
+        width: 100%;
+        height: 700px;
+        margin: 75px auto 0px;
+        display: flex;
+    }
+
+    .moviePoster {
+        position: relative;
+        top: 15%;
+        left: 20%;
+        height: 450px;
+        width: 300px;
+        box-shadow: 0px 0px 40px #222;
+        image-rendering: optimizeSpeed;
+    }
+
+    .info {
+        position: relative;
+        top: -4%;
+        left: 30%;
+        width: 600px;
+    }
+
+    .mov0 {
+        position: relative;
+        top: 18%;
+    }
+
+    .movTitle {
+        position: relative;
+        top: 20%;
+        color: white;
+        font-size: 36px;
+        text-shadow: 1px 1px 5px #333;
+        font-weight: bold;
+    }
+
+    .mov1 {
+        position: relative;
+        top: 20%;
+    }
+
+    .movTag {
+        position: relative;
+        top: 30%;
+        left: 0%;
+        color: white;
+        font-size: 28px;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .mov2 {
+        position: relative;
+        top: 25%;
+    }
+
+    .movOverview {
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        color: white;
+        font-size: 24px;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .mov3 {
+        position: relative;
+        top: 32%;
+    }
+
+    .movContext {
+        position: relative;
+        top: 60%;
+        left: 0%;
+        width: 100%;
+
+        color: white;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .mov4 {
+        position: relative;
+        top: 35%;
+    }
+
+    .movRelease {
+        position: relative;
+        top: 73%;
+        left: 0%;
+        color: white;
+        font-size: 20px;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .movDate {
+        position: relative;
+        top: 73.5%;
+        left: 2%;
+        color: white;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .movTime {
+        position: relative;
+        top: 73%;
+        left: 25%;
+        color: white;
+        font-size: 20px;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .movDuration {
+        position: relative;
+        top: 73.5%;
+        left: 27%;
+        color: white;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .mov5 {
+        position: relative;
+        top: 35%;
+    }
+
+    .movPopu {
+        position: relative;
+        top: 78%;
+        left: 0%;
+        color: white;
+        font-size: 20px;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .movPop {
+        position: relative;
+        top: 78.5%;
+        left: 2%;
+        color: white;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .movWeb {
+        position: relative;
+        top: 78%;
+        left: 32%;
+        color: white;
+        font-size: 20px;
+        text-shadow: 1px 1px 5px #333;
+        text-decoration: none;
+    }
+
+    .mov6 {
+        position: relative;
+        top: 35%;
+    }
+
+    .mov7 {
+        position: relative;
+        top: 35%;
+    }
+
+    .movAV {
+        position: relative;
+        top: 83%;
+        left: 0%;
+        color: white;
+        font-size: 20px;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .movAVote {
+        position: relative;
+        top: 83.5%;
+        left: 2%;
+        color: white;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .movVC {
+        position: relative;
+        top: 83%;
+        left: 35%;
+        color: white;
+        font-size: 20px;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .movVCount {
+        position: relative;
+        top: 83.5%;
+        left: 37%;
+        color: white;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .trailer {
+        position: relative;
+        left: 33%;
+        height: 380px;
+    }
+
+    .vid {
+        position: relative;
+    }
+
+    .made {
+        position: relative;
+        width: 100%;
+        padding-top: 56px;
+        padding-bottom: 48px;
+    }
+
+    .mail {
+        position: relative;
+        width: 100%;
+        padding-top: 56px;
+        padding-bottom: 48px;
+        left: -8%;
+    }
+
+    .reminder {
+        position: relative;
+        left: 30%;
+        color: white;
+        font-size: 24px;
+        text-shadow: 1px 1px 5px #333;
+    }
+
+    .searchForm {
+        position: relative;
+        left: 34%;
+        width: 30%;
+    }
+
+    .movs1 {
+        max-height: 550px;
+    }
+
+    .movs2 {
+        max-height: 550px;
+    }
+
+    .show {
+        background-color: whitesmoke;
+        color: black;
+        border: none;
+        margin: 0px 30px 40px 30px;
+    }
+
+    .show:hover {
+        background-color: lightgrey;
+    }
 </style>
