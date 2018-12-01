@@ -69,6 +69,12 @@
 </script>
 
 <style scoped>
+.movTitle {
+        color: white;
+        font-size: 36px;
+        text-shadow: 1px 1px 5px #333;
+        font-weight: bold;
+}
 .backbuild {
   position: fixed;
   min-width: 105%;
