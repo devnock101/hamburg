@@ -68,3 +68,43 @@
     }
 </script>
 
+<style scoped>
+.backbuild {
+  position: fixed;
+  min-width: 105%;
+  margin: -120px -50px;
+  z-index: -99;
+}
+.back {
+    -webkit-filter: blur(20px);
+    filter: blur(10px);
+    width: 100%;
+    height: auto;
+    overflow: contain;
+}
+.holder {
+  position: relative;
+  margin: 105px auto 10px;
+  align-items: center;
+  height: 100%;
+  width: 60%;
+  z-index: 2;
+}
+.bucket {
+  padding: 10px;
+  margin: 20px auto;
+  box-shadow: 0px 0px 40px #444;
+}
+.bucket:hover {
+  box-shadow: 0px 0px 20px #222;
+}
+.movieLink {
+  text-decoration: none;
+  color: #333;
+}
+.movieLink:hover {
+  text-decoration: none;
+  color: #07b;
+}
+
+</style>
